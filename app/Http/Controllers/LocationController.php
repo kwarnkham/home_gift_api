@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Validator;
-use App\Item;
-use App\Image;
+use App\Location;
 
-class ItemController extends Controller
+class LocationController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -25,9 +24,7 @@ class ItemController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {
-        //
-    }
+    { }
 
     /**
      * Store a newly created resource in storage.
@@ -38,39 +35,17 @@ class ItemController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'price' => 'required|numeric',
-            'description' => 'required',
-            'notice' => 'required',
-            'merchant_id' => 'required',
-            'location_id' => 'required',
-            'category_id' => 'required',
-            'image' => 'required'
+            'name' => 'required'
         ]);
-
         if ($validator->fails()) {
             return ['code' => '1', 'msg' => $validator->errors()->first()];
         }
 
-        $item = Item::create([
-            'name' => $request->name,
-            'price' => $request->price,
-            'description' => $request->description,
-            'notice' => $request->notice,
-            'merchant_id' => $request->merchant_id,
-            'location_id' => $request->location_id
+        $location = Location::create([
+            'name' => $request->name
         ]);
 
-        $item->categories()->attach($request->category_id);
-
-
-        Image::create([
-            'name' => $request->image,
-            'item_id' => $item->id
-        ]);
-
-
-        return ['code' => '0', 'msg' => 'ok', 'result' => $item->load('categories', 'images', 'location', 'merchant')];
+        return ['code' => '0', 'msg' => 'ok', 'result' => $location];
     }
 
     /**

@@ -16,3 +16,13 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/item', 'ItemController@store');
+
+Route::post('/merchant', 'MerchantController@store');
+
+Route::post('/location', 'LocationController@store');
+
+Route::post('/category', 'CategoryController@store');
+
+Route::post('/image', 'ImageController@store');

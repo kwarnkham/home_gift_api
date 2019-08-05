@@ -19,6 +19,7 @@ class CreateCategoryItemTable extends Migration
             $table->timestamps();
             $table->foreign('item_id')->references('id')->on('items');
             $table->foreign('category_id')->references('id')->on('categories');
+            $table->primary(['item_id', 'category_id']);
         });
     }
 
