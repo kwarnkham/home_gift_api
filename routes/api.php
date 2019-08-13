@@ -13,6 +13,17 @@ use Illuminate\Http\Request;
 |
 */
 
+/*
+|--------------------------------------------------------------------------
+| API return code infomation
+|--------------------------------------------------------------------------
+|
+| 0 - success
+| 1 - handled issue
+| 2 - token issue
+|
+*/
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
@@ -26,3 +37,7 @@ Route::post('/location', 'LocationController@store');
 Route::post('/category', 'CategoryController@store');
 
 Route::post('/image', 'ImageController@store');
+
+Route::get('/test', function(){
+    return json_encode(['message'=>'success']);
+});

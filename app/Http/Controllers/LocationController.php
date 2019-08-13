@@ -41,6 +41,12 @@ class LocationController extends Controller
             return ['code' => '1', 'msg' => $validator->errors()->first()];
         }
 
+        $is_existed_location = Location::where('name', $request->name)->exists();
+
+        if ($is_existed_location) {
+            return ['code' => '1', 'msg' => $request->name . ' already exist'];
+        }
+
         $location = Location::create([
             'name' => $request->name
         ]);
