@@ -33,11 +33,12 @@ Route::post('/item', 'ItemController@store');
 Route::post('/merchant', 'MerchantController@store');
 
 Route::post('/location', 'LocationController@store');
+Route::get('/locations', 'LocationController@index');
 
 Route::post('/category', 'CategoryController@store');
 
 Route::post('/image', 'ImageController@store');
 
-Route::get('/test', function(){
-    return json_encode(['message'=>'success']);
+Route::get('/test', function () {
+    return json_encode(['message' => 'success']);
 });
