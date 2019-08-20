@@ -84,9 +84,26 @@ class LocationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'id' => 'required',
+            'name' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return ['code' => '1', 'msg' => $validator->errors()->first()];
+        }
+
+        $is_existed_location = Location::where('name', $request->name)->exists();
+
+        if ($is_existed_location) {
+            return ['code' => '1', 'msg' => $request->name . ' already exist'];
+        }
+
+        $updated_location = Location::where('id', $request->id)->update(['name' => $request->name]);
+
+        return ['code' => '0', 'msg' => 'ok', 'result' => $updated_location];
     }
 
     /**

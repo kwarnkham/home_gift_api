@@ -34,6 +34,7 @@ Route::post('/merchant', 'MerchantController@store');
 
 Route::post('/location', 'LocationController@store');
 Route::get('/locations', 'LocationController@index');
+Route::put('/location', 'LocationController@update');
 
 Route::post('/category', 'CategoryController@store');
 
