@@ -101,7 +101,8 @@ class LocationController extends Controller
             return ['code' => '1', 'msg' => $request->name . ' already exist'];
         }
 
-        $updated_location = Location::where('id', $request->id)->update(['name' => $request->name]);
+        $updated_location_id = Location::where('id', $request->id)->update(['name' => $request->name]);
+        $updated_location= Location::find($updated_location_id);
 
         return ['code' => '0', 'msg' => 'ok', 'result' => $updated_location];
     }
