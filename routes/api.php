@@ -39,6 +39,8 @@ Route::get('/locations', 'LocationController@index');
 Route::put('/location', 'LocationController@update');
 
 Route::post('/category', 'CategoryController@store');
+Route::get('/categories', 'CategoryController@index');
+Route::put('/category', 'CategoryController@update');
 
 Route::post('/image', 'ImageController@store');
 

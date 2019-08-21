@@ -15,7 +15,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $categories = Category::all();
+        return ['code' => '0', 'msg' => 'ok', 'result' => $categories];
     }
 
     /**
@@ -79,9 +80,27 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'id' => 'required',
+            'name' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return ['code' => '1', 'msg' => $validator->errors()->first()];
+        }
+
+        $is_existed_category = Category::where('name', $request->name)->exists();
+
+        if ($is_existed_category) {
+            return ['code' => '1', 'msg' => $request->name . ' already exist'];
+        }
+
+        $updated_category_id = Category::where('id', $request->id)->update(['name' => $request->name]);
+        $updated_category = Category::find($updated_category_id);
+
+        return ['code' => '0', 'msg' => 'ok', 'result' => $updated_category];
     }
 
     /**
