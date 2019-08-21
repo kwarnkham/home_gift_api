@@ -15,7 +15,8 @@ class MerchantController extends Controller
      */
     public function index()
     {
-        //
+        $merchants = Merchant::all();
+        return ['code' => '0', 'msg' => 'ok', 'result' => $merchants];
     }
 
     /**
@@ -46,7 +47,7 @@ class MerchantController extends Controller
         $merchant = Merchant::create([
             'name' => $request->name
         ]);
-            
+
         return ['code' => '0', 'msg' => 'ok', 'result' => $merchant];
     }
 
@@ -79,9 +80,27 @@ class MerchantController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'id' => 'required',
+            'name' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return ['code' => '1', 'msg' => $validator->errors()->first()];
+        }
+
+        $is_existed_merchant = Merchant::where('name', $request->name)->exists();
+
+        if ($is_existed_merchant) {
+            return ['code' => '1', 'msg' => $request->name . ' already exist'];
+        }
+
+        $updated_merchant_id = Merchant::where('id', $request->id)->update(['name' => $request->name]);
+        $updated_merchant = Merchant::find($updated_merchant_id);
+
+        return ['code' => '0', 'msg' => 'ok', 'result' => $updated_merchant];
     }
 
     /**

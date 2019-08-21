@@ -31,6 +31,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('/item', 'ItemController@store');
 
 Route::post('/merchant', 'MerchantController@store');
+Route::get('/merchants', 'MerchantController@index');
+Route::put('/merchant', 'MerchantController@update');
 
 Route::post('/location', 'LocationController@store');
 Route::get('/locations', 'LocationController@index');
