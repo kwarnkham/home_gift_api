@@ -29,6 +29,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('/item', 'ItemController@store');
+Route::get('/items', 'ItemController@index');
 
 Route::post('/merchant', 'MerchantController@store');
 Route::get('/merchants', 'MerchantController@index');

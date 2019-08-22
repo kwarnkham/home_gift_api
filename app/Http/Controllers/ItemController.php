@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Image;
+use App\Item;
 use Illuminate\Http\Request;
 use Validator;
-use App\Item;
-use App\Image;
 
 class ItemController extends Controller
 {
@@ -16,7 +16,8 @@ class ItemController extends Controller
      */
     public function index()
     {
-        //
+        $items = Item::all();
+        return ['code' => '0', 'msg' => 'ok', 'result' => $items->load('categories', 'images', 'location', 'merchant')];
     }
 
     /**
@@ -45,7 +46,7 @@ class ItemController extends Controller
             'merchant_id' => 'required',
             'location_id' => 'required',
             'category_id' => 'required',
-            'image' => 'required'
+            'image' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -58,17 +59,15 @@ class ItemController extends Controller
             'description' => $request->description,
             'notice' => $request->notice,
             'merchant_id' => $request->merchant_id,
-            'location_id' => $request->location_id
+            'location_id' => $request->location_id,
         ]);
 
         $item->categories()->attach($request->category_id);
 
-
         Image::create([
             'name' => $request->image,
-            'item_id' => $item->id
+            'item_id' => $item->id,
         ]);
-
 
         return ['code' => '0', 'msg' => 'ok', 'result' => $item->load('categories', 'images', 'location', 'merchant')];
     }
