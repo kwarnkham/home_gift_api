@@ -62,7 +62,7 @@ class ItemController extends Controller
             'location_id' => $request->location_id,
         ]);
 
-        $item->categories()->attach($request->category_id);
+        $item->categories()->attach($request->category_id); //array of categories
 
         Image::create([
             'name' => $request->image,
