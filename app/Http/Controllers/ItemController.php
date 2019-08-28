@@ -64,13 +64,10 @@ class ItemController extends Controller
 
         $item->categories()->attach(json_decode($request->categories)); //array of categories
 
-        // foreach (json_decode($request->images) as $image) {
-        //     Image::create([
-        //         'name' => $request->name,
-        //         'item_id' => $item->id,
-        //     ]);
-        // }
-        
+        foreach ($request->images as $image) {
+            $saveImage = $image->store('public/item_images');
+            Image::create(['name'=>$saveImage, 'item_id'=>$item->id]);
+        }
         return ['code' => '0', 'msg' => 'ok', 'result' => $item->load('categories', 'images', 'location', 'merchant')];
     }
 
