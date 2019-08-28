@@ -45,8 +45,8 @@ class ItemController extends Controller
             'notice' => 'required',
             'merchant_id' => 'required',
             'location_id' => 'required',
-            'category_id' => 'required',
-            'image' => 'required',
+            'categories' => 'required',
+            'images' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -62,13 +62,15 @@ class ItemController extends Controller
             'location_id' => $request->location_id,
         ]);
 
-        $item->categories()->attach($request->category_id); //array of categories
+        $item->categories()->attach(json_decode($request->categories)); //array of categories
 
-        Image::create([
-            'name' => $request->image,
-            'item_id' => $item->id,
-        ]);
-
+        // foreach (json_decode($request->images) as $image) {
+        //     Image::create([
+        //         'name' => $request->name,
+        //         'item_id' => $item->id,
+        //     ]);
+        // }
+        
         return ['code' => '0', 'msg' => 'ok', 'result' => $item->load('categories', 'images', 'location', 'merchant')];
     }
 
