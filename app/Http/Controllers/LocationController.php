@@ -45,7 +45,7 @@ class LocationController extends Controller
         $is_existed_location = Location::where('name', $request->name)->exists();
 
         if ($is_existed_location) {
-            return ['code' => '1', 'msg' => $request->name . ' already exist'];
+            return ['code' => '1', 'msg' => $request->name . ' already exists'];
         }
 
         $location = Location::create([
@@ -98,7 +98,7 @@ class LocationController extends Controller
         $is_existed_location = Location::where('name', $request->name)->exists();
 
         if ($is_existed_location) {
-            return ['code' => '1', 'msg' => $request->name . ' already exist'];
+            return ['code' => '1', 'msg' => $request->name . ' already exists'];
         }
 
         $updated_location_id = Location::where('id', $request->id)->update(['name' => $request->name]);

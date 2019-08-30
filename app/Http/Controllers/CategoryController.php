@@ -44,6 +44,12 @@ class CategoryController extends Controller
             return ['code' => '1', 'msg' => $validator->errors()->first()];
         }
 
+        $is_existed_category = Category::where('name', $request->name)->exists();
+
+        if ($is_existed_category) {
+            return ['code' => '1', 'msg' => $request->name . ' already exist'];
+        }
+
         $category = Category::create([
             'name' => $request->name
         ]);
