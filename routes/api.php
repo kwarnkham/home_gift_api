@@ -30,6 +30,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('/item', 'ItemController@store');
 Route::get('/items', 'ItemController@index');
+Route::post('/item/category/add', 'ItemController@addCategory');
+Route::post('/item/category/remove', 'ItemController@removeCategory');
 
 Route::post('/merchant', 'MerchantController@store');
 Route::get('/merchants', 'MerchantController@index');
@@ -44,6 +46,8 @@ Route::get('/categories', 'CategoryController@index');
 Route::put('/category', 'CategoryController@update');
 
 Route::post('/image', 'ImageController@store');
+
+
 
 Route::get('/test', function () {
     return json_encode(['message' => 'success']);
