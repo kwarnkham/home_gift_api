@@ -34,6 +34,7 @@ Route::post('/item/category/add', 'ItemController@addCategory');
 Route::post('/item/category/remove', 'ItemController@removeCategory');
 Route::put('/item/name', 'ItemController@updateName');
 
+
 Route::post('/merchant', 'MerchantController@store');
 Route::get('/merchants', 'MerchantController@index');
 Route::put('/merchant', 'MerchantController@update');
@@ -47,6 +48,7 @@ Route::get('/categories', 'CategoryController@index');
 Route::put('/category', 'CategoryController@update');
 
 Route::post('/image', 'ImageController@store');
+Route::delete('/image/{id}', 'ImageController@destroy');
 
 
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Image;
 use Validator;
+use Illuminate\Support\Facades\Storage;
 
 class ImageController extends Controller
 {
@@ -37,17 +38,19 @@ class ImageController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'item_id' => 'required|numeric'
+            'image' => 'required',
+            'itemId' => 'required|numeric'
         ]);
         if ($validator->fails()) {
             return ['code' => '1', 'msg' => $validator->errors()->first()];
         }
 
-        $image = Image::create([
-            'name' => $request->name,
-            'item_id' => $request->item_id
-        ]);
+        if($request->itemId == 'null'){
+            return ['code' => '1', 'msg' => 'Item ID is empty'];
+        }
+
+        $saveImage = $request->image->store('public/item_images');
+        $image=Image::create(['name'=>$saveImage, 'item_id'=>$request->itemId]);
 
         return ['code' => '0', 'msg' => 'ok', 'result' => $image];
     }
@@ -94,6 +97,8 @@ class ImageController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $image = Image::find($id);
+        Storage::delete($image->name);
+        $image->delete();
     }
 }
