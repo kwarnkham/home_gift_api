@@ -52,6 +52,6 @@ Route::delete('/image/{id}', 'ImageController@destroy');
 
 
 
-Route::get('/test', function () {
-    return json_encode(['message' => 'success']);
-});
+// Route::get('/test', function () {
+//     return json_encode(['message' => 'success']);
+// });
