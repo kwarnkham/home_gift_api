@@ -156,4 +156,29 @@ class ItemController extends Controller
 
         return ['code' => '0', 'msg' => 'ok', 'result' => $item->load('categories')];
     }
+
+    public function updateName(Request $request){
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'itemId'=> 'required'
+        ]);
+
+        if($request->itemId == 'null'){
+            return ['code' => '1', 'msg' => 'Item ID is missing'];
+        }
+
+        if ($validator->fails()) {
+            return ['code' => '1', 'msg' => $validator->errors()->first()];
+        }
+
+        $item=Item::find($request->itemId);
+
+        $item->name = $request->name;
+
+        if(!$item->save()){
+            ['code' => '1', 'msg' => 'Cannot update item name'];
+        }
+
+        return ['code' => '0', 'msg' => 'ok', 'result' => $item->load('categories', 'location', 'merchant', 'images')];
+    }
 }

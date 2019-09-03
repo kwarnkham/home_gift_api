@@ -9,7 +9,7 @@ class Item extends Model
     protected $guarded = ['id'];
 
     protected $hidden = [
-        'location_id', 'merchant_id',
+        'location_id', 'merchant_id', 'created_at', 'updated_at'
     ];
 
     public function location()

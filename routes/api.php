@@ -32,6 +32,7 @@ Route::post('/item', 'ItemController@store');
 Route::get('/items', 'ItemController@index');
 Route::post('/item/category/add', 'ItemController@addCategory');
 Route::post('/item/category/remove', 'ItemController@removeCategory');
+Route::put('/item/name', 'ItemController@updateName');
 
 Route::post('/merchant', 'MerchantController@store');
 Route::get('/merchants', 'MerchantController@index');
