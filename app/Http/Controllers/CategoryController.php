@@ -50,11 +50,13 @@ class CategoryController extends Controller
             return ['code' => '1', 'msg' => $request->name . ' already exist'];
         }
 
-        $category = Category::create([
+        Category::create([
             'name' => $request->name
         ]);
 
-        return ['code' => '0', 'msg' => 'ok', 'result' => $category];
+        $categories= Category::all();
+
+        return ['code' => '0', 'msg' => 'ok', 'result' => $categories];
     }
 
     /**
@@ -103,10 +105,10 @@ class CategoryController extends Controller
             return ['code' => '1', 'msg' => $request->name . ' already exist'];
         }
 
-        $updated_category_id = Category::where('id', $request->id)->update(['name' => $request->name]);
-        $updated_category = Category::find($updated_category_id);
+        Category::where('id', $request->id)->update(['name' => $request->name]);
+        $categories = Category::all();
 
-        return ['code' => '0', 'msg' => 'ok', 'result' => $updated_category];
+        return ['code' => '0', 'msg' => 'ok', 'result' => $categories];
     }
 
     /**
