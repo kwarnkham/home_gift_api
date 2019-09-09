@@ -39,18 +39,18 @@ class ImageController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'image' => 'required',
-            'itemId' => 'required|numeric'
+            'item_id' => 'required|numeric'
         ]);
         if ($validator->fails()) {
             return ['code' => '1', 'msg' => $validator->errors()->first()];
         }
 
-        if($request->itemId == 'null'){
+        if($request->item_id == 'null'){
             return ['code' => '1', 'msg' => 'Item ID is empty'];
         }
 
         $saveImage = $request->image->store('public/item_images');
-        $image=Image::create(['name'=>$saveImage, 'item_id'=>$request->itemId]);
+        $image=Image::create(['name'=>$saveImage, 'item_id'=>$request->item_id]);
 
         return ['code' => '0', 'msg' => 'ok', 'result' => $image];
     }

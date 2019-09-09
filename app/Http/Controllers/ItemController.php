@@ -45,15 +45,15 @@ class ItemController extends Controller
             'notice' => 'required',
             'merchant_id' => 'required',
             'location_id' => 'required',
-            'categories' => 'required',
-            'images' => 'required',
+            // 'categories' => 'required',
+            // 'images' => 'required',
         ]);
 
         if ($validator->fails()) {
             return ['code' => '1', 'msg' => $validator->errors()->first()];
         }
 
-        $item = Item::create([
+        Item::create([
             'name' => $request->name,
             'price' => $request->price,
             'description' => $request->description,
@@ -62,12 +62,13 @@ class ItemController extends Controller
             'location_id' => $request->location_id,
         ]);
 
-        $item->categories()->attach(json_decode($request->categories)); //array of categories
+        $item = Item::all();
+        // $item->categories()->attach(json_decode($request->categories)); //array of categories
 
-        foreach ($request->images as $image) {
-            $saveImage = $image->store('public/item_images');
-            Image::create(['name'=>$saveImage, 'item_id'=>$item->id]);
-        }
+        // foreach ($request->images as $image) {
+        //     $saveImage = $image->store('public/item_images');
+        //     Image::create(['name'=>$saveImage, 'item_id'=>$item->id]);
+        // }
         return ['code' => '0', 'msg' => 'ok', 'result' => $item->load('categories', 'images', 'location', 'merchant')];
     }
 
