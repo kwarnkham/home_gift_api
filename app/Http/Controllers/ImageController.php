@@ -42,7 +42,6 @@ class ImageController extends Controller
         $validator = Validator::make($request->all(), [
             'image' => 'required',
             'item_id' => 'required|numeric',
-            'image_name' => 'required',
         ]);
         if ($validator->fails()) {
             return ['code' => '1', 'msg' => $validator->errors()->first()];
@@ -53,9 +52,9 @@ class ImageController extends Controller
         }
         // $image= base64_decode($request->image);
         // file_put_contents($request->image_name ,$image); //in public
-        // $saveImage = basename(Storage::putFile('public/item_images', new File($request->image_name)));
+        $saveImage = basename(Storage::putFile('public/item_images', $request->image));
         // unlink($request->image_name);
-        // Image::create(['name'=>$saveImage, 'item_id'=>$request->item_id]);
+        Image::create(['name'=>$saveImage, 'item_id'=>$request->item_id]);
         $items= Item::all();
         return ['code' => '0', 'msg' => 'ok', 'result' => $items->load('categories', 'images', 'location', 'merchant')];
     }
