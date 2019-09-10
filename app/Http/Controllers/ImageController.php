@@ -51,11 +51,11 @@ class ImageController extends Controller
         if($request->item_id == 'null'){
             return ['code' => '1', 'msg' => 'Item ID is empty'];
         }
-        $image= base64_decode($request->image);
-        file_put_contents($request->image_name ,$image); //in public
-        $saveImage = basename(Storage::putFile('public/item_images', new File($request->image_name)));
-        unlink($request->image_name);
-        Image::create(['name'=>$saveImage, 'item_id'=>$request->item_id]);
+        // $image= base64_decode($request->image);
+        // file_put_contents($request->image_name ,$image); //in public
+        // $saveImage = basename(Storage::putFile('public/item_images', new File($request->image_name)));
+        // unlink($request->image_name);
+        // Image::create(['name'=>$saveImage, 'item_id'=>$request->item_id]);
         $items= Item::all();
         return ['code' => '0', 'msg' => 'ok', 'result' => $items->load('categories', 'images', 'location', 'merchant')];
     }
