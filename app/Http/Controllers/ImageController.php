@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Image;
 use Validator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\File;
+use App\Item;
 
 class ImageController extends Controller
 {
@@ -39,7 +41,8 @@ class ImageController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'image' => 'required',
-            'item_id' => 'required|numeric'
+            'item_id' => 'required|numeric',
+            'image_name' => 'required',
         ]);
         if ($validator->fails()) {
             return ['code' => '1', 'msg' => $validator->errors()->first()];
@@ -48,11 +51,13 @@ class ImageController extends Controller
         if($request->item_id == 'null'){
             return ['code' => '1', 'msg' => 'Item ID is empty'];
         }
-
-        $saveImage = $request->image->store('public/item_images');
-        $image=Image::create(['name'=>$saveImage, 'item_id'=>$request->item_id]);
-
-        return ['code' => '0', 'msg' => 'ok', 'result' => $image];
+        $image= base64_decode($request->image);
+        file_put_contents($request->image_name ,$image); //in public
+        $saveImage = basename(Storage::putFile('public/item_images', new File($request->image_name)));
+        unlink($request->image_name);
+        Image::create(['name'=>$saveImage, 'item_id'=>$request->item_id]);
+        $items= Item::all();
+        return ['code' => '0', 'msg' => 'ok', 'result' => $items->load('categories', 'images', 'location', 'merchant')];
     }
 
     /**
@@ -100,5 +105,7 @@ class ImageController extends Controller
         $image = Image::find($id);
         Storage::delete($image->name);
         $image->delete();
+        $items= Item::all();
+        return ['code' => '0', 'msg' => 'ok', 'result' => $items->load('categories', 'images', 'location', 'merchant')];
     }
 }
