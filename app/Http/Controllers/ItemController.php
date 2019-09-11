@@ -45,8 +45,6 @@ class ItemController extends Controller
             'notice' => 'required',
             'merchant_id' => 'required',
             'location_id' => 'required',
-            // 'categories' => 'required',
-            // 'images' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -62,14 +60,8 @@ class ItemController extends Controller
             'location_id' => $request->location_id,
         ]);
 
-        $item = Item::all();
-        // $item->categories()->attach(json_decode($request->categories)); //array of categories
-
-        // foreach ($request->images as $image) {
-        //     $saveImage = $image->store('public/item_images');
-        //     Image::create(['name'=>$saveImage, 'item_id'=>$item->id]);
-        // }
-        return ['code' => '0', 'msg' => 'ok', 'result' => $item->load('categories', 'images', 'location', 'merchant')];
+        $items = Item::all();
+        return ['code' => '0', 'msg' => 'ok', 'result' => $items->load('categories', 'images', 'location', 'merchant')];
     }
 
     /**
@@ -80,7 +72,8 @@ class ItemController extends Controller
      */
     public function show($id)
     {
-        //
+        
+        
     }
 
     /**
@@ -103,7 +96,30 @@ class ItemController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'price' => 'required|numeric',
+            'description' => 'required',
+            'notice' => 'required',
+            'merchant_id' => 'required',
+            'location_id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return ['code' => '1', 'msg' => $validator->errors()->first()];
+        }
+
+        $item= Item::find($id);
+        $item->name= $request->name;
+        $item->price= $request->price;
+        $item->description=$request->description;
+        $item->notice=$request->notice;
+        $item->merchant_id= $request->merchant_id;
+        $item->location_id = $request->location_id;
+        $item->save();
+        $items = Item::all();
+        return ['code' => '0', 'msg' => 'ok', 'result' => $items->load('categories', 'images', 'location', 'merchant')];
+
     }
 
     /**
@@ -117,45 +133,18 @@ class ItemController extends Controller
         //
     }
 
-    public function addCategory(Request $request){
-        $validator = Validator::make($request->all(), [
-            'itemId' => 'required',
-            'categoryId' => 'required',
-        ]);
-        
-        if($request->categoryId == 'null'){
-            return ['code' => '1', 'msg' => 'Category is empty'];
-        }
-
-        if ($validator->fails()) {
-            return ['code' => '1', 'msg' => $validator->errors()->first()];
-        }
-        $item=Item::find($request->itemId);
-
-        $item->categories()->attach($request->categoryId);
-
-        return ['code' => '0', 'msg' => 'ok', 'result' => $item->load('categories')];
+    public function addCategory($id, $category_id){
+        $item=Item::find($id);
+        $item->categories()->attach($category_id);
+        $items= Item::all();
+        return ['code' => '0', 'msg' => 'ok', 'result' => $items->load('categories', 'images', 'location', 'merchant')];
     }
 
-    public function removeCategory(Request $request){
-        $validator = Validator::make($request->all(), [
-            'itemId' => 'required',
-            'categoryId' => 'required',
-        ]);
-        
-        if($request->categoryId == 'null'){
-            return ['code' => '1', 'msg' => 'Category is empty'];
-        }
-
-        if ($validator->fails()) {
-            return ['code' => '1', 'msg' => $validator->errors()->first()];
-        }
-
-        $item=Item::find($request->itemId);
-
-        $item->categories()->detach($request->categoryId);
-
-        return ['code' => '0', 'msg' => 'ok', 'result' => $item->load('categories')];
+    public function removeCategory($id, $category_id){
+        $item=Item::find($id);
+        $item->categories()->detach($category_id);
+        $items= Item::all();
+        return ['code' => '0', 'msg' => 'ok', 'result' => $items->load('categories', 'images', 'location', 'merchant')];
     }
 
     public function updateName(Request $request){

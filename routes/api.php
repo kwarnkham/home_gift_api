@@ -30,8 +30,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('/item', 'ItemController@store');
 Route::get('/items', 'ItemController@index');
-Route::post('/item/category/add', 'ItemController@addCategory');
-Route::post('/item/category/remove', 'ItemController@removeCategory');
+Route::post('/item/{id}/{category_id}', 'ItemController@addCategory');
+Route::delete('/item/{id}/{category_id}', 'ItemController@removeCategory');
+Route::put('item/{id}', 'ItemController@update');
 Route::put('/item/name', 'ItemController@updateName');
 
 
