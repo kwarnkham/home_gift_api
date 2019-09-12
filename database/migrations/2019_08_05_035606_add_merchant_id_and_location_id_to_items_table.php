@@ -16,8 +16,8 @@ class AddMerchantIdAndLocationIdToItemsTable extends Migration
         Schema::table('items', function (Blueprint $table) {
             $table->unsignedBigInteger('merchant_id');
             $table->unsignedBigInteger('location_id');
-            $table->foreign('merchant_id')->references('id')->on('merchants');
-            $table->foreign('location_id')->references('id')->on('locations');
+            // $table->foreign('merchant_id')->references('id')->on('merchants')->onDelete('cascade');
+            // $table->foreign('location_id')->references('id')->on('locations')->onDelete('cascade');
         });
     }
 
