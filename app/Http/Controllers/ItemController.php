@@ -43,6 +43,7 @@ class ItemController extends Controller
             'price' => 'required|numeric',
             'description' => 'required',
             'notice' => 'required',
+            'weight' => 'required|numeric',
             'merchant_id' => 'required',
             'location_id' => 'required',
         ]);
@@ -56,6 +57,7 @@ class ItemController extends Controller
             'price' => $request->price,
             'description' => $request->description,
             'notice' => $request->notice,
+            'weight' => $request->weight,
             'merchant_id' => $request->merchant_id,
             'location_id' => $request->location_id,
         ]);
@@ -71,10 +73,7 @@ class ItemController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
-        
-        
-    }
+    { }
 
     /**
      * Show the form for editing the specified resource.
@@ -109,17 +108,16 @@ class ItemController extends Controller
             return ['code' => '1', 'msg' => $validator->errors()->first()];
         }
 
-        $item= Item::find($id);
-        $item->name= $request->name;
-        $item->price= $request->price;
-        $item->description=$request->description;
-        $item->notice=$request->notice;
-        $item->merchant_id= $request->merchant_id;
+        $item = Item::find($id);
+        $item->name = $request->name;
+        $item->price = $request->price;
+        $item->description = $request->description;
+        $item->notice = $request->notice;
+        $item->merchant_id = $request->merchant_id;
         $item->location_id = $request->location_id;
         $item->save();
         $items = Item::all();
         return ['code' => '0', 'msg' => 'ok', 'result' => $items->load('categories', 'images', 'location', 'merchant')];
-
     }
 
     /**
@@ -133,27 +131,30 @@ class ItemController extends Controller
         //
     }
 
-    public function addCategory($id, $category_id){
-        $item=Item::find($id);
+    public function addCategory($id, $category_id)
+    {
+        $item = Item::find($id);
         $item->categories()->attach($category_id);
-        $items= Item::all();
+        $items = Item::all();
         return ['code' => '0', 'msg' => 'ok', 'result' => $items->load('categories', 'images', 'location', 'merchant')];
     }
 
-    public function removeCategory($id, $category_id){
-        $item=Item::find($id);
+    public function removeCategory($id, $category_id)
+    {
+        $item = Item::find($id);
         $item->categories()->detach($category_id);
-        $items= Item::all();
+        $items = Item::all();
         return ['code' => '0', 'msg' => 'ok', 'result' => $items->load('categories', 'images', 'location', 'merchant')];
     }
 
-    public function updateName(Request $request){
+    public function updateName(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'itemId'=> 'required'
+            'itemId' => 'required'
         ]);
 
-        if($request->itemId == 'null'){
+        if ($request->itemId == 'null') {
             return ['code' => '1', 'msg' => 'Item ID is missing'];
         }
 
@@ -161,11 +162,11 @@ class ItemController extends Controller
             return ['code' => '1', 'msg' => $validator->errors()->first()];
         }
 
-        $item=Item::find($request->itemId);
+        $item = Item::find($request->itemId);
 
         $item->name = $request->name;
 
-        if(!$item->save()){
+        if (!$item->save()) {
             ['code' => '1', 'msg' => 'Cannot update item name'];
         }
 

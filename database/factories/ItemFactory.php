@@ -11,6 +11,7 @@ $factory->define(Item::class, function (Faker $faker) {
         'price'=>$faker->numberBetween($min = 1000, $max = 9000),
         'description'=>$faker->sentence($nbWords = 10, $variableNbWords = true),
         'notice'=>$faker->sentence($nbWords = 10, $variableNbWords = true),
+        'weight'=>$faker->numberBetween($min = 1, $max = 20),
         'location_id'=>function(){
             return factory(App\Location::class)->create()->id;
         },

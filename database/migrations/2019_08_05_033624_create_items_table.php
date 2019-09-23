@@ -19,6 +19,7 @@ class CreateItemsTable extends Migration
             $table->integer('price');
             $table->text('description');
             $table->text('notice');
+            $table->double('weight');
             $table->timestamps();
         });
     }
