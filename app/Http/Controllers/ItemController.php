@@ -100,6 +100,7 @@ class ItemController extends Controller
             'price' => 'required|numeric',
             'description' => 'required',
             'notice' => 'required',
+            'weight' => 'required|numeric',
             'merchant_id' => 'required',
             'location_id' => 'required',
         ]);
@@ -113,6 +114,7 @@ class ItemController extends Controller
         $item->price = $request->price;
         $item->description = $request->description;
         $item->notice = $request->notice;
+        $item->weight = $request->weight;
         $item->merchant_id = $request->merchant_id;
         $item->location_id = $request->location_id;
         $item->save();
