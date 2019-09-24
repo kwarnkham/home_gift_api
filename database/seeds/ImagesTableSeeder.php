@@ -15,7 +15,7 @@ class ImagesTableSeeder extends Seeder
         foreach($images as $image){
             App\Image::create([
                 'name'=>$image,
-                'item_id'=>rand(1,6)
+                'item_id'=>rand(1,2)
                 ]);
         }
     }
