@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Location;
 
 class LocationsTableSeeder extends Seeder
 {
@@ -11,6 +12,11 @@ class LocationsTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Location::class, 10)->create();
+        $locations= array('Yangon', 'Mandalay', 'NPT', 'Lashio', 'Bego', 'MyitKyiNar', 'KyutKai');
+        foreach($locations as $location){
+            Location::create(['name'=>$location]);
+        }
+        // factory(App\Location::class, 10)->create();
+        
     }
 }
