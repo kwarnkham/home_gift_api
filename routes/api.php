@@ -51,6 +51,8 @@ Route::put('/category', 'CategoryController@update');
 Route::post('/image', 'ImageController@store');
 Route::delete('/image/{id}', 'ImageController@destroy');
 
+Route::post('/user', 'UserController@store');
+
 
 
 // Route::get('/test', function () {
