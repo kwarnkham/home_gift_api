@@ -31,6 +31,6 @@ class UserController extends Controller
             'api_token' => hash('sha256', $token),
         ])->save();
 
-        return ['code' => '0', 'msg' => 'ok', ['token' => $token]];
+        return ['code' => '0', 'msg' => 'ok', 'result' => ['token' => $token]];
     }
 }
