@@ -30,7 +30,6 @@ class UserController extends Controller
         $user->forceFill([
             'api_token' => hash('sha256', $token),
         ])->save();
-
-        return ['code' => '0', 'msg' => 'ok', 'result' => ['token' => $token]];
+        return ['code' => '0', 'msg' => 'ok', 'result' => ['user' => $user, 'token' => $token]];
     }
 }
