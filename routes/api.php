@@ -52,6 +52,9 @@ Route::post('/image', 'ImageController@store');
 Route::delete('/image/{id}', 'ImageController@destroy');
 
 Route::post('/user', 'UserController@store');
+Route::post('/login', 'UserController@login');
+Route::post('/logout', 'UserController@logout')->middleware('auth:api');
+Route::get('/user', 'UserController@show')->middleware('auth:api');
 
 
 
