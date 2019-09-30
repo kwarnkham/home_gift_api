@@ -18,6 +18,7 @@ class CreatePromotionsTable extends Migration
             $table->string('name');
             $table->integer('amount');
             $table->text('note');
+            $table->boolean('active')->default(0);
             $table->timestamps();
         });
     }
