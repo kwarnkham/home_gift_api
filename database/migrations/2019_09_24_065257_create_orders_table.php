@@ -23,7 +23,9 @@ class CreateOrdersTable extends Migration
             $table->string('payment');
             $table->integer('delivery_fees');
             $table->integer('amount')->nullable()->default(null);
-            $table->string('status')->default('unconfirmed');
+            $table->enum('status',['unconfirmed', 'confirmed', 'on the way', 'delivered', 'canceled'])->default('unconfirmed');
+            $table->text('c_note');
+            $table->text('a_note');
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('promotion_id')->references('id')->on('promotions');
