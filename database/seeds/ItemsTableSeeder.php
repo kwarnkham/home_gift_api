@@ -17,7 +17,7 @@ class ItemsTableSeeder extends Seeder
         // });
         $items = ['item 1', 'item 2', 'item 3', 'item 4', 'item 5'];
         foreach($items as $item){
-            App\Item::create([
+            $temp =App\Item::create([
                 'name'=>$item,
                 'price'=>rand(1000, 10000),
                 'description'=>'Description of '.$item.' in full information and details',
@@ -26,6 +26,7 @@ class ItemsTableSeeder extends Seeder
                 'location_id'=>rand(1,7),
                 'merchant_id'=>rand(1,6)
             ]);
+            $temp->categories()->attach(1);
         }
     }
 }

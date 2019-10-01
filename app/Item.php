@@ -31,4 +31,8 @@ class Item extends Model
     {
         return $this->belongsToMany('App\Category')->withTimestamps();;
     }
+
+    public function orders(){
+        return $this->belongsToMany('App\Order')->withPivot('name', 'quantity', 'price', 'description', 'notice', 'weight', 'location_id', 'merchant_id')->withTimestamps();
+    }
 }

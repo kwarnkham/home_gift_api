@@ -22,10 +22,10 @@ class CreateOrdersTable extends Migration
             $table->string('address');
             $table->string('payment');
             $table->integer('delivery_fees');
-            $table->integer('amount')->nullable()->default(null);
+            $table->integer('amount');
             $table->enum('status',['unconfirmed', 'confirmed', 'on the way', 'delivered', 'canceled'])->default('unconfirmed');
-            $table->text('c_note');
-            $table->text('a_note');
+            $table->text('c_note')->nullable()->default(null);
+            $table->text('a_note')->nullable()->default(null);
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('promotion_id')->references('id')->on('promotions');

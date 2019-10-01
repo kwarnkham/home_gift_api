@@ -6,7 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    public function promotion(){
+    protected $guarded = ['id'];
+
+    public function promotion()
+    {
         return $this->belongsTo('App\Promotion');
+    }
+
+    protected $with = ['items'];
+    public function items()
+    {
+        return $this->belongsToMany('App\Item')->withPivot('name', 'quantity', 'price', 'description', 'notice', 'weight', 'location_id', 'merchant_id')->withTimestamps();
     }
 }
