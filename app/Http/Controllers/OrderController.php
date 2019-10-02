@@ -28,15 +28,17 @@ class OrderController extends Controller
         $user_id = Auth::user()->id;
 
         $inputData = $request->only('name', 'mobile', 'address', 'payment', 'delivery_fees', 'amount');
-        $inputData['user_id']=$user_id;
+        $inputData['user_id'] = $user_id;
         // $order = Order::create($inputData);
 
         // return $order;
         return $request->items;
     }
 
-    public function index(Request $request){
-        $orders=Order::where('user_id',$request->userId)->get();
-        return $orders;
+    public function index()
+    {
+        $user = Auth::user();
+        $orders = Order::where('user_id', $user->id)->get();
+        return ['code' => '0', 'msg' => 'ok', 'result' => $orders];
     }
 }
