@@ -18,7 +18,7 @@ class OrderController extends Controller
             'payment' => 'required',
             'delivery_fees' => 'required',
             'amount' => 'required',
-            'items' => 'required'
+            'items' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -28,11 +28,26 @@ class OrderController extends Controller
         $user_id = Auth::user()->id;
 
         $inputData = $request->only('name', 'mobile', 'address', 'payment', 'delivery_fees', 'amount');
+        if ($request->c_note != null) {
+            $inputData['c_note'] = $request->c_note;
+        }
         $inputData['user_id'] = $user_id;
-        // $order = Order::create($inputData);
-
-        // return $order;
-        return $request->items;
+        $order = Order::create($inputData);
+        $items = json_decode($request->items);
+        foreach ($items as $item) {
+            $order->items()->attach($item->item->id, [
+                'name' => $item->item->name,
+                'quantity' => $item->quantity,
+                'price' => $item->item->price,
+                'description' => $item->item->description,
+                'notice' => $item->item->notice,
+                'weight' => $item->item->weight,
+                'location_id' => $item->item->location->id,
+                'merchant_id' => $item->item->merchant->id
+            ]);
+        }
+        $orders = Order::where('user_id', Auth::user()->id)->get();
+        return ['code' => '0', 'msg' => 'ok', 'result' => $orders];
     }
 
     public function index()
