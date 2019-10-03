@@ -46,14 +46,13 @@ class OrderController extends Controller
                 'merchant_id' => $item->item->merchant->id
             ]);
         }
-        $orders = Order::where('user_id', Auth::user()->id)->get();
+        $orders = Order::where('user_id', Auth::user()->id)->orderBy('created_at', 'asc')->get();
         return ['code' => '0', 'msg' => 'ok', 'result' => $orders];
     }
 
     public function index()
     {
-        $user = Auth::user();
-        $orders = Order::where('user_id', $user->id)->get();
+        $orders = Order::where('user_id', Auth::user()->id)->orderBy('created_at', 'desc')->get();
         return ['code' => '0', 'msg' => 'ok', 'result' => $orders];
     }
 }
