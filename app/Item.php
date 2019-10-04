@@ -12,6 +12,8 @@ class Item extends Model
         'location_id', 'merchant_id', 'created_at', 'updated_at'
     ];
 
+    protected $with = ['categories', 'images', 'location', 'merchant'];
+
     public function location()
     {
         return $this->belongsTo('App\Location');

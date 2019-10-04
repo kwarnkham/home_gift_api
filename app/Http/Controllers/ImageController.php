@@ -56,7 +56,7 @@ class ImageController extends Controller
         // unlink($request->image_name);
         Image::create(['name'=>$saveImage, 'item_id'=>$request->item_id]);
         $items= Item::all();
-        return ['code' => '0', 'msg' => 'ok', 'result' => $items->load('categories', 'images', 'location', 'merchant')];
+        return ['code' => '0', 'msg' => 'ok', 'result' => $items];
     }
 
     /**
@@ -105,6 +105,6 @@ class ImageController extends Controller
         Storage::delete($image->name);
         $image->delete();
         $items= Item::all();
-        return ['code' => '0', 'msg' => 'ok', 'result' => $items->load('categories', 'images', 'location', 'merchant')];
+        return ['code' => '0', 'msg' => 'ok', 'result' => $items];
     }
 }

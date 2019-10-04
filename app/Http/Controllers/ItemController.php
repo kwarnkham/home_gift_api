@@ -17,7 +17,7 @@ class ItemController extends Controller
     public function index()
     {
         $items = Item::all();
-        return ['code' => '0', 'msg' => 'ok', 'result' => $items->load('categories', 'images', 'location', 'merchant')];
+        return ['code' => '0', 'msg' => 'ok', 'result' => $items];
     }
 
     /**
@@ -63,7 +63,7 @@ class ItemController extends Controller
         ]);
 
         $items = Item::all();
-        return ['code' => '0', 'msg' => 'ok', 'result' => $items->load('categories', 'images', 'location', 'merchant')];
+        return ['code' => '0', 'msg' => 'ok', 'result' => $items];
     }
 
     /**
@@ -119,7 +119,7 @@ class ItemController extends Controller
         $item->location_id = $request->location_id;
         $item->save();
         $items = Item::all();
-        return ['code' => '0', 'msg' => 'ok', 'result' => $items->load('categories', 'images', 'location', 'merchant')];
+        return ['code' => '0', 'msg' => 'ok', 'result' => $items];
     }
 
     /**
@@ -138,7 +138,7 @@ class ItemController extends Controller
         $item = Item::find($id);
         $item->categories()->attach($category_id);
         $items = Item::all();
-        return ['code' => '0', 'msg' => 'ok', 'result' => $items->load('categories', 'images', 'location', 'merchant')];
+        return ['code' => '0', 'msg' => 'ok', 'result' => $items];
     }
 
     public function removeCategory($id, $category_id)
@@ -146,7 +146,7 @@ class ItemController extends Controller
         $item = Item::find($id);
         $item->categories()->detach($category_id);
         $items = Item::all();
-        return ['code' => '0', 'msg' => 'ok', 'result' => $items->load('categories', 'images', 'location', 'merchant')];
+        return ['code' => '0', 'msg' => 'ok', 'result' => $items];
     }
 
     public function updateName(Request $request)
@@ -172,6 +172,6 @@ class ItemController extends Controller
             ['code' => '1', 'msg' => 'Cannot update item name'];
         }
 
-        return ['code' => '0', 'msg' => 'ok', 'result' => $item->load('categories', 'location', 'merchant', 'images')];
+        return ['code' => '0', 'msg' => 'ok', 'result' => $item];
     }
 }
