@@ -50,9 +50,14 @@ class OrderController extends Controller
         return ['code' => '0', 'msg' => 'ok', 'result' => $orders];
     }
 
-    public function index()
+    public function userOrder()
     {
         $orders = Order::where('user_id', Auth::user()->id)->orderBy('created_at', 'desc')->get();
+        return ['code' => '0', 'msg' => 'ok', 'result' => $orders];
+    }
+
+    public function index(){
+        $orders = Order::all();
         return ['code' => '0', 'msg' => 'ok', 'result' => $orders];
     }
 }

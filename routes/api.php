@@ -36,4 +36,5 @@ Route::post('/logout', 'UserController@logout')->middleware('auth:api');
 Route::get('/user', 'UserController@show')->middleware('auth:api');
 
 Route::post('/order', 'OrderController@store')->middleware('auth:api');
-Route::get('/order/user', 'OrderController@index')->middleware('auth:api');
+Route::get('/order/user', 'OrderController@userOrder')->middleware('auth:api');
+Route::get('/orders', 'OrderController@index');
