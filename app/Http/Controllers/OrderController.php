@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 use App\Order;
+use Illuminate\Validation\Rule;
 
 class OrderController extends Controller
 {
@@ -56,8 +57,64 @@ class OrderController extends Controller
         return ['code' => '0', 'msg' => 'ok', 'result' => $orders];
     }
 
-    public function index(){
+    public function index()
+    {
         $orders = Order::all();
         return ['code' => '0', 'msg' => 'ok', 'result' => $orders];
+    }
+
+    public function update($id, Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'action' => [
+                'required',
+                Rule::in(['confirmed', 'on the way', 'delivered', 'canceled']),
+            ],
+        ]);
+
+        if ($validator->fails()) {
+            return ['code' => '1', 'msg' => $validator->errors()->first()];
+        }
+
+        $order = Order::find($id);
+        $invalidAction = false;
+
+        if ($order->status == 'delivered' || $order->status == 'canceled') {
+            $invalidAction = true;
+        }
+
+        if ($order->status == 'on the way') {
+            if ($request->action == 'delivered' || $request->action == 'canceled') {
+                $order->status = $request->action;
+                $order->save();
+            } else {
+                $invalidAction = true;
+            }
+        }
+
+        if ($order->status == 'confirmed') {
+            if ($request->action == 'on the way' || $request->action == 'canceled') {
+                $order->status = $request->action;
+                $order->save();
+            } else {
+                $invalidAction = true;
+            }
+        }
+
+        if ($order->status == 'pending') {
+            if ($request->action == 'confirmed' || $request->action == 'canceled') {
+                $order->status = $request->action;
+                $order->save();
+            } else {
+                $invalidAction = true;
+            }
+        }
+
+        if ($invalidAction) {
+            return ['code' => '1', 'msg' => 'Invalid Action'];
+        }
+
+        return ['code' => '0', 'msg' => 'ok',];
+        // return [$request, 'id' => $id];
     }
 }
