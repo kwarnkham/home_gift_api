@@ -42,7 +42,6 @@ class ItemController extends Controller
             'name' => 'required',
             'price' => 'required|numeric',
             'description' => 'required',
-            'notice' => 'required',
             'weight' => 'required|numeric',
             'merchant_id' => 'required',
             'location_id' => 'required',
@@ -52,7 +51,13 @@ class ItemController extends Controller
             return ['code' => '1', 'msg' => $validator->errors()->first()];
         }
 
-        Item::create([
+        $alreadyExisted = Item::where('name', $request->name)->exists();
+
+        if ($alreadyExisted) {
+            return ['code' => '1', 'msg' => "Item name: $request->name already existed"];
+        }
+
+        $item = Item::create([
             'name' => $request->name,
             'price' => $request->price,
             'description' => $request->description,
@@ -62,8 +67,7 @@ class ItemController extends Controller
             'location_id' => $request->location_id,
         ]);
 
-        $items = Item::all();
-        return ['code' => '0', 'msg' => 'ok', 'result' => $items];
+        return ['code' => '0', 'msg' => 'ok', 'result' => $item];
     }
 
     /**
@@ -137,8 +141,8 @@ class ItemController extends Controller
     {
         $item = Item::find($id);
         $item->categories()->attach($category_id);
-        $items = Item::all();
-        return ['code' => '0', 'msg' => 'ok', 'result' => $items];
+        $item->refresh();
+        return ['code' => '0', 'msg' => 'ok', 'result' => $item];
     }
 
     public function removeCategory($id, $category_id)

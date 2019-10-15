@@ -40,22 +40,25 @@ class ImageController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'image' => 'required',
+            'files' => 'required|array',
+            'files.*' => 'image',
             'item_id' => 'required|numeric',
         ]);
         if ($validator->fails()) {
             return ['code' => '1', 'msg' => $validator->errors()->first()];
         }
 
-        if($request->item_id == 'null'){
+        if ($request->item_id == 'null') {
             return ['code' => '1', 'msg' => 'Item ID is empty'];
         }
-        // $image= base64_decode($request->image);
-        // file_put_contents($request->image_name ,$image); //in public
-        $saveImage = basename(Storage::putFile('public/item_images', $request->image));
-        // unlink($request->image_name);
-        Image::create(['name'=>$saveImage, 'item_id'=>$request->item_id]);
-        $items= Item::all();
+
+
+        foreach ($request->file('files') as $image) {
+            $saveImage = basename(Storage::putFile('public/item_images', $image));
+            Image::create(['name' => $saveImage, 'item_id' => $request->item_id]);
+        }
+        // return $a;
+        $items = Item::all();
         return ['code' => '0', 'msg' => 'ok', 'result' => $items];
     }
 
@@ -104,7 +107,7 @@ class ImageController extends Controller
         $image = Image::find($id);
         Storage::delete($image->name);
         $image->delete();
-        $items= Item::all();
+        $items = Item::all();
         return ['code' => '0', 'msg' => 'ok', 'result' => $items];
     }
 }

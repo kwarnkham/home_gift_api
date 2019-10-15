@@ -18,7 +18,7 @@ class CreateItemsTable extends Migration
             $table->string('name')->unique();
             $table->integer('price');
             $table->text('description');
-            $table->text('notice');
+            $table->text('notice')->nullable()->default(null);
             $table->double('weight');
             $table->timestamps();
         });
