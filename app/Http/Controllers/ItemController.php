@@ -122,8 +122,8 @@ class ItemController extends Controller
         $item->merchant_id = $request->merchant_id;
         $item->location_id = $request->location_id;
         $item->save();
-        $items = Item::all();
-        return ['code' => '0', 'msg' => 'ok', 'result' => $items];
+        $item->refresh();
+        return ['code' => '0', 'msg' => 'ok', 'result' => $item];
     }
 
     /**
