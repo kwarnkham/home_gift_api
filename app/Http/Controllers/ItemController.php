@@ -153,6 +153,21 @@ class ItemController extends Controller
         return ['code' => '0', 'msg' => 'ok', 'result' => $items];
     }
 
+    public function updateCategory($id, Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'categories' => 'required|array',
+        ]);
+
+        if ($validator->fails()) {
+            return ['code' => '1', 'msg' => $validator->errors()->first()];
+        }   
+        $item = Item::find($id);
+        $item->categories()->sync($request->categories);
+        $item->refresh();
+        return ['code' => '0', 'msg' => 'ok', 'result' => $item];
+    }
+
     public function updateName(Request $request)
     {
         $validator = Validator::make($request->all(), [

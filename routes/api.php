@@ -11,6 +11,7 @@ Route::post('/item', 'ItemController@store');
 Route::get('/items', 'ItemController@index');
 Route::post('/item/{id}/{category_id}', 'ItemController@addCategory');
 Route::delete('/item/{id}/{category_id}', 'ItemController@removeCategory');
+Route::put('/item/{id}/categories', 'ItemController@updateCategory');
 Route::put('item/{id}', 'ItemController@update');
 Route::put('/item/name', 'ItemController@updateName');
 
