@@ -16,7 +16,7 @@ class LocationController extends Controller
     public function index()
     {
         $locations = Location::all();
-        return ['code' => '0', 'msg' => 'ok', 'result' => $locations];
+        return ['code' => '0', 'msg' => 'ok', 'result' => ['locations' => $locations]];
     }
 
     /**
@@ -48,13 +48,11 @@ class LocationController extends Controller
             return ['code' => '1', 'msg' => $request->name . ' already exists'];
         }
 
-        Location::create([
+        $location = Location::create([
             'name' => $request->name
         ]);
 
-        $locations= Location::all();
-
-        return ['code' => '0', 'msg' => 'ok', 'result' => $locations];
+        return ['code' => '0', 'msg' => 'ok', 'result' => ['location' => $location]];
     }
 
     /**
@@ -102,11 +100,11 @@ class LocationController extends Controller
         if ($is_existed_location) {
             return ['code' => '1', 'msg' => $request->name . ' already exists'];
         }
+        $location = Location::find($request->id);
+        $location->name = $request->name;
+        $location->save();
 
-        Location::where('id', $request->id)->update(['name' => $request->name]);
-        $locations= Location::all();
-
-        return ['code' => '0', 'msg' => 'ok', 'result' => $locations];
+        return ['code' => '0', 'msg' => 'ok', 'result' => ['location' => $location]];
     }
 
     /**
