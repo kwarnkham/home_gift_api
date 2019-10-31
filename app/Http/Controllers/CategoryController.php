@@ -16,7 +16,7 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::all();
-        return ['code' => '0', 'msg' => 'ok', 'result' => $categories];
+        return ['code' => '0', 'msg' => 'ok', 'result' => ['categories' => $categories]];
     }
 
     /**
@@ -50,13 +50,12 @@ class CategoryController extends Controller
             return ['code' => '1', 'msg' => $request->name . ' already exist'];
         }
 
-        Category::create([
+        $category = Category::create([
             'name' => $request->name
         ]);
 
-        $categories= Category::all();
 
-        return ['code' => '0', 'msg' => 'ok', 'result' => $categories];
+        return ['code' => '0', 'msg' => 'ok', 'result' => ['category' => $category]];
     }
 
     /**
@@ -105,10 +104,12 @@ class CategoryController extends Controller
             return ['code' => '1', 'msg' => $request->name . ' already exist'];
         }
 
-        Category::where('id', $request->id)->update(['name' => $request->name]);
-        $categories = Category::all();
+        $category = Category::find($request->id);
+        $category->name = $request->name;
+        $category->save();
 
-        return ['code' => '0', 'msg' => 'ok', 'result' => $categories];
+
+        return ['code' => '0', 'msg' => 'ok', 'result' => ['category' => $category]];
     }
 
     /**

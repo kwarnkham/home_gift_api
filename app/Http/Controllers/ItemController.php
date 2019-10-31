@@ -17,7 +17,7 @@ class ItemController extends Controller
     public function index()
     {
         $items = Item::all();
-        return ['code' => '0', 'msg' => 'ok', 'result' => $items];
+        return ['code' => '0', 'msg' => 'ok', 'result' => ['items' => $items]];
     }
 
     /**
@@ -67,7 +67,7 @@ class ItemController extends Controller
             'location_id' => $request->location_id,
         ]);
 
-        return ['code' => '0', 'msg' => 'ok', 'result' => $item];
+        return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
     }
 
     /**
@@ -128,7 +128,7 @@ class ItemController extends Controller
         $item->location_id = $request->location_id;
         $item->save();
         $item->refresh();
-        return ['code' => '0', 'msg' => 'ok', 'result' => $item];
+        return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
     }
 
     /**
@@ -147,15 +147,15 @@ class ItemController extends Controller
         $item = Item::find($id);
         $item->categories()->attach($category_id);
         $item->refresh();
-        return ['code' => '0', 'msg' => 'ok', 'result' => $item];
+        return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
     }
 
     public function removeCategory($id, $category_id)
     {
         $item = Item::find($id);
         $item->categories()->detach($category_id);
-        $items = Item::all();
-        return ['code' => '0', 'msg' => 'ok', 'result' => $items];
+        $item->refresh();
+        return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
     }
 
     public function updateCategory($id, Request $request)
@@ -170,7 +170,7 @@ class ItemController extends Controller
         $item = Item::find($id);
         $item->categories()->sync($request->categories);
         $item->refresh();
-        return ['code' => '0', 'msg' => 'ok', 'result' => $item];
+        return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
     }
 
     public function updateName(Request $request)
@@ -196,6 +196,6 @@ class ItemController extends Controller
             ['code' => '1', 'msg' => 'Cannot update item name'];
         }
 
-        return ['code' => '0', 'msg' => 'ok', 'result' => $item];
+        return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
     }
 }

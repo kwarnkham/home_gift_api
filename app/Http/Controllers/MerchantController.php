@@ -16,7 +16,7 @@ class MerchantController extends Controller
     public function index()
     {
         $merchants = Merchant::all();
-        return ['code' => '0', 'msg' => 'ok', 'result' => $merchants];
+        return ['code' => '0', 'msg' => 'ok', 'result' => ["merchants" => $merchants]];
     }
 
     /**
@@ -46,16 +46,15 @@ class MerchantController extends Controller
 
         $is_existed_merchant = Merchant::where('name', $request->name)->exists();
 
-        if($is_existed_merchant){
+        if ($is_existed_merchant) {
             return ['code' => '1', 'msg' => $request->name . ' already exists'];
         }
-        Merchant::create([
+        $merchant = Merchant::create([
             'name' => $request->name
         ]);
 
-        $merchants = Merchant::all();
 
-        return ['code' => '0', 'msg' => 'ok', 'result' => $merchants];
+        return ['code' => '0', 'msg' => 'ok', 'result' => ["merchant" => $merchant]];
     }
 
     /**
@@ -104,12 +103,11 @@ class MerchantController extends Controller
             return ['code' => '1', 'msg' => $request->name . ' already exist'];
         }
 
-        Merchant::where('id', $request->id)->update(['name' => $request->name]);
-        $merchants = Merchant::all();
+        $merchant = Merchant::find($request->id);
+        $merchant->name = $request->name;
+        $merchant->save();
 
-
-
-        return ['code' => '0', 'msg' => 'ok', 'result' => $merchants];
+        return ['code' => '0', 'msg' => 'ok', 'result' => ["merchant" => $merchant]];
     }
 
     /**
