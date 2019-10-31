@@ -113,6 +113,11 @@ class ItemController extends Controller
             return ['code' => '1', 'msg' => $validator->errors()->first()];
         }
 
+        $existed = Item::where('name', $request->name)->where('id', '!=', $id)->exists();
+
+        if ($existed) {
+            return ['code' => '1', 'msg' => 'Item already exist'];
+        }
         $item = Item::find($id);
         $item->name = $request->name;
         $item->price = $request->price;
@@ -161,7 +166,7 @@ class ItemController extends Controller
 
         if ($validator->fails()) {
             return ['code' => '1', 'msg' => $validator->errors()->first()];
-        }   
+        }
         $item = Item::find($id);
         $item->categories()->sync($request->categories);
         $item->refresh();
