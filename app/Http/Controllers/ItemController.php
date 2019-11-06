@@ -9,33 +9,15 @@ use Validator;
 
 class ItemController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
         $items = Item::all();
         return ['code' => '0', 'msg' => 'ok', 'result' => ['items' => $items]];
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -70,33 +52,6 @@ class ItemController extends Controller
         return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    { }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
@@ -131,32 +86,6 @@ class ItemController extends Controller
         return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
-
-    public function addCategory($id, $category_id)
-    {
-        $item = Item::find($id);
-        $item->categories()->attach($category_id);
-        $item->refresh();
-        return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
-    }
-
-    public function removeCategory($id, $category_id)
-    {
-        $item = Item::find($id);
-        $item->categories()->detach($category_id);
-        $item->refresh();
-        return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
-    }
 
     public function updateCategory($id, Request $request)
     {
@@ -173,29 +102,47 @@ class ItemController extends Controller
         return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
     }
 
-    public function updateName(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'itemId' => 'required'
-        ]);
+    // public function updateName(Request $request)
+    // {
+    //     $validator = Validator::make($request->all(), [
+    //         'name' => 'required',
+    //         'itemId' => 'required'
+    //     ]);
 
-        if ($request->itemId == 'null') {
-            return ['code' => '1', 'msg' => 'Item ID is missing'];
-        }
+    //     if ($request->itemId == 'null') {
+    //         return ['code' => '1', 'msg' => 'Item ID is missing'];
+    //     }
 
-        if ($validator->fails()) {
-            return ['code' => '1', 'msg' => $validator->errors()->first()];
-        }
+    //     if ($validator->fails()) {
+    //         return ['code' => '1', 'msg' => $validator->errors()->first()];
+    //     }
 
-        $item = Item::find($request->itemId);
+    //     $item = Item::find($request->itemId);
 
-        $item->name = $request->name;
+    //     $item->name = $request->name;
 
-        if (!$item->save()) {
-            ['code' => '1', 'msg' => 'Cannot update item name'];
-        }
+    //     if (!$item->save()) {
+    //         ['code' => '1', 'msg' => 'Cannot update item name'];
+    //     }
 
-        return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
-    }
+    //     return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
+    // }
 }
+
+
+
+    // public function addCategory($id, $category_id)
+    // {
+    //     $item = Item::find($id);
+    //     $item->categories()->attach($category_id);
+    //     $item->refresh();
+    //     return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
+    // }
+
+    // public function removeCategory($id, $category_id)
+    // {
+    //     $item = Item::find($id);
+    //     $item->categories()->detach($category_id);
+    //     $item->refresh();
+    //     return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
+    // }
