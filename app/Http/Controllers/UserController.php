@@ -70,4 +70,8 @@ class UserController extends Controller
         ])->save();
         return ['code' => '0', 'msg' => 'ok'];
     }
+
+    public function reponseToInvalidToken(){
+        return ['code' => '1', 'msg' => 'Login again']; 
+    }
 }

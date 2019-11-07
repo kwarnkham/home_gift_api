@@ -30,7 +30,8 @@ Route::delete('/image/{id}', 'ImageController@destroy')->where('id', '[0-9]+');
 Route::post('/user', 'UserController@store');
 Route::post('/login', 'UserController@login');
 Route::post('/logout', 'UserController@logout')->middleware('auth:api');
-Route::get('/user', 'UserController@show')->middleware('auth:api');
+Route::get('/user', 'UserController@show')->middleware('auth:api')->name('checkToken');
+Route::get('/tokenExpired', 'UserController@reponseToInvalidToken')->name('tokenExpired');
 
 Route::post('/order', 'OrderController@store')->middleware('auth:api');
 Route::get('/order/user', 'OrderController@userOrder')->middleware('auth:api');
