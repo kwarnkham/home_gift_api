@@ -27,7 +27,6 @@ class OrderController extends Controller
         }
 
         $user_id = Auth::user()->id;
-
         $inputData = $request->only('name', 'mobile', 'address', 'payment', 'delivery_fees', 'amount');
         if ($request->c_note != null) {
             $inputData['c_note'] = $request->c_note;
@@ -35,20 +34,30 @@ class OrderController extends Controller
         $inputData['user_id'] = $user_id;
         $order = Order::create($inputData);
         $items = json_decode($request->items);
-        foreach ($items as $item) {
-            $order->items()->attach($item->item->id, [
-                'name' => $item->item->name,
-                'quantity' => $item->quantity,
-                'price' => $item->item->price,
-                'description' => $item->item->description,
-                'notice' => $item->item->notice,
-                'weight' => $item->item->weight,
-                'location_id' => $item->item->location->id,
-                'merchant_id' => $item->item->merchant->id
+        foreach ($items as $cartItem) {
+            // $order->items()->attach($cartItem->item->id, [
+            //     'name' => $cartItem->item->name,
+            //     'quantity' => $cartItem->quantity,
+            //     'price' => $cartItem->item->price,
+            //     'description' => $cartItem->item->description,
+            //     'notice' => $cartItem->item->notice,
+            //     'weight' => $cartItem->item->weight,
+            //     'location' => $cartItem->item->location,
+            //     'merchant' => $cartItem->item->merchant
+            // ]);
+            $order->items()->attach($cartItem->item->id, [
+                'name' => $cartItem->item->name,
+                'quantity' => $cartItem->quantity,
+                'price' => $cartItem->item->price,
+                'description' => $cartItem->item->description,
+                'notice' => $cartItem->item->notice,
+                'weight' => $cartItem->item->weight,
+                'location' => $cartItem->item->location->name,
+                'merchant' => $cartItem->item->merchant->name
             ]);
         }
-        $orders = Order::where('user_id', Auth::user()->id)->orderBy('created_at', 'asc')->get();
-        return ['code' => '0', 'msg' => 'ok', 'result' => $orders];
+        $order = Order::find($order->id);
+        return ['code' => '0', 'msg' => 'ok', 'result' => ['order' => $order]];
     }
 
     public function userOrder()

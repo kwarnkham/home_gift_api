@@ -23,7 +23,7 @@ class CreateOrdersTable extends Migration
             $table->string('payment');
             $table->integer('delivery_fees');
             $table->integer('amount');
-            $table->enum('status',['pending', 'confirmed', 'on the way', 'delivered', 'canceled'])->default('pending');
+            $table->enum('status', ['pending', 'confirmed', 'on the way', 'delivered', 'canceled'])->default('pending');
             $table->text('c_note')->nullable()->default(null);
             $table->text('a_note')->nullable()->default(null);
             $table->timestamps();

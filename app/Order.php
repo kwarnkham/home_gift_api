@@ -9,15 +9,23 @@ class Order extends Model
 {
     protected $guarded = ['id'];
 
+    protected $with = ['promotion', 'user', 'items'];
+
+
     public function promotion()
     {
         return $this->belongsTo('App\Promotion');
     }
 
-    protected $with = ['items'];
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
+
+
     public function items()
     {
-        return $this->belongsToMany('App\Item')->withPivot('name', 'quantity', 'price', 'description', 'notice', 'weight', 'location_id', 'merchant_id')->withTimestamps();
+        return $this->belongsToMany('App\Item')->withPivot('name', 'quantity', 'price', 'description', 'notice', 'weight', 'location', 'merchant')->withTimestamps();
     }
 
     protected $dispatchesEvents = [

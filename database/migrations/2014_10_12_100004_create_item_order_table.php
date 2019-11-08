@@ -26,8 +26,7 @@ class CreateItemOrderTable extends Migration
             $table->string('location');
             $table->string('merchant');
             $table->timestamps();
-            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
-            $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
+            $table->unique(['order_id', 'item_id']);
         });
     }
 
