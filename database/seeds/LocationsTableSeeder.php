@@ -12,11 +12,9 @@ class LocationsTableSeeder extends Seeder
      */
     public function run()
     {
-        $locations= array('Yangon', 'Mandalay', 'NPT', 'Lashio', 'Bego', 'MyitKyiNar', 'KyutKai');
-        foreach($locations as $location){
-            Location::create(['name'=>$location]);
+        $locations = array('Yangon', 'Mandalay', 'NPT', 'Lashio', 'Bego', 'MyitKyiNar', 'KyutKai');
+        foreach ($locations as $location) {
+            Location::create(['name' => $location]);
         }
-        // factory(App\Location::class, 10)->create();
-        
     }
 }

@@ -11,12 +11,12 @@ class ImagesTableSeeder extends Seeder
      */
     public function run()
     {
-        $images= array('image-1.jpg', 'image-2.jpg', 'image-3.jpg', 'image-4.jpg', 'image-5.jpg');
-        foreach($images as $image){
+        $images = array('image-1.jpg', 'image-2.jpg', 'image-3.jpg', 'image-4.jpg', 'image-5.jpg');
+        foreach ($images as $key => $image) {
             App\Image::create([
-                'name'=>$image,
-                'item_id'=>rand(1,2)
-                ]);
+                'name' => $image,
+                'item_id' => $key + 1
+            ]);
         }
     }
 }
