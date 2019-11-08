@@ -20,7 +20,11 @@ class CreateItemsTable extends Migration
             $table->text('description');
             $table->text('notice')->nullable()->default(null);
             $table->double('weight');
+            $table->unsignedBigInteger('merchant_id');
+            $table->unsignedBigInteger('location_id');
             $table->timestamps();
+            $table->foreign('merchant_id')->references('id')->on('merchants');
+            $table->foreign('location_id')->references('id')->on('locations');
         });
     }
 
