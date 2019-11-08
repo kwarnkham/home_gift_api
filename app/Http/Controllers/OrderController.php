@@ -62,8 +62,8 @@ class OrderController extends Controller
 
     public function userOrder()
     {
-        $orders = Order::where('user_id', Auth::user()->id)->orderBy('created_at', 'desc')->simplePaginate(5);
-        return ['code' => '0', 'msg' => 'ok', 'result' => $orders];
+        $orders = Order::where('user_id', Auth::user()->id)->orderBy('created_at', 'desc')->get();
+        return ['code' => '0', 'msg' => 'ok', 'result' => ['orders' => $orders]];
     }
 
     public function index()
