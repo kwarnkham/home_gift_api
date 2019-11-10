@@ -9,7 +9,7 @@ class Order extends Model
 {
     protected $guarded = ['id'];
 
-    protected $with = ['promotion',];
+    protected $with = ['promotion','items'];
 
 
     public function promotion()
