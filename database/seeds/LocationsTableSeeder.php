@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use App\Location;
+use App\Province;
 
 class LocationsTableSeeder extends Seeder
 {
@@ -12,9 +13,11 @@ class LocationsTableSeeder extends Seeder
      */
     public function run()
     {
-        $locations = array('Yangon', 'Mandalay', 'NPT', 'Lashio', 'Bego', 'MyitKyiNar', 'KyutKai');
-        foreach ($locations as $location) {
-            Location::create(['name' => $location]);
+        $provinces = ['Ayeyarwady', 'Bago', 'Chin', 'Kachin', 'Kayah', 'Kayin', 'Magway', 'Mandalay', 'Mon', 'Rakhine', 'Shan', 'Sagaing', 'Tanintharyi', 'Yangon',];
+
+        foreach ($provinces as $province) {
+            $createdProvince = Province::create(['name' => $province]);
+            Location::create(['name' => $province, 'province_id' => $createdProvince->id]);
         }
     }
 }

@@ -10,9 +10,14 @@ class Location extends Model
     protected $hidden = [
         'created_at', 'updated_at',
     ];
+    protected $with = ['province'];
 
     public function items()
     {
         return $this->hasMany('App\Item');
+    }
+
+    public function province(){
+        return $this->belongsTo('App\Province');
     }
 }

@@ -7,6 +7,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('/provinces', 'ProvinceController@index');
+
 Route::post('/item', 'ItemController@store');
 Route::get('/items', 'ItemController@index');
 Route::put('/item/{id}/categories', 'ItemController@updateCategory');

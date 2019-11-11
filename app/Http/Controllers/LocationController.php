@@ -8,7 +8,7 @@ use App\Location;
 
 class LocationController extends Controller
 {
-   
+
     public function index()
     {
         $locations = Location::all();
@@ -18,7 +18,8 @@ class LocationController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required'
+            'name' => 'required',
+            'province_id' => 'required|numeric'
         ]);
         if ($validator->fails()) {
             return ['code' => '1', 'msg' => $validator->errors()->first()];
@@ -31,7 +32,8 @@ class LocationController extends Controller
         }
 
         $location = Location::create([
-            'name' => $request->name
+            'name' => $request->name,
+            'province_id' => $request->province_id
         ]);
 
         return ['code' => '0', 'msg' => 'ok', 'result' => ['location' => $location]];
@@ -42,20 +44,22 @@ class LocationController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'id' => 'required',
-            'name' => 'required'
+            'name' => 'required',
+            'province_id' => 'required|numeric'
         ]);
 
         if ($validator->fails()) {
             return ['code' => '1', 'msg' => $validator->errors()->first()];
         }
 
-        $is_existed_location = Location::where('name', $request->name)->exists();
+        $is_existed_location = Location::where('name', $request->name)->where('id', '!=', $request->id)->exists();
 
         if ($is_existed_location) {
             return ['code' => '1', 'msg' => $request->name . ' already exists'];
         }
         $location = Location::find($request->id);
         $location->name = $request->name;
+        $location->province_id = $request->province_id;
         $location->save();
 
         return ['code' => '0', 'msg' => 'ok', 'result' => ['location' => $location]];
