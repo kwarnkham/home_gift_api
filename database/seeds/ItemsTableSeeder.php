@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Location;
 
 class ItemsTableSeeder extends Seeder
 {
@@ -15,15 +16,16 @@ class ItemsTableSeeder extends Seeder
         // factory(App\Item::class, 10)->create()->each(function ($item) {
         //     $item->categories()->save(factory(App\Category::class)->make());
         // });
-        $items = ['item 1', 'item 2', 'item 3', 'item 4', 'item 5'];
-        foreach($items as $item){
+        $locations = Location::all();
+        // $items = ['item 1', 'item 2', 'item 3', 'item 4', 'item 5'];
+        foreach($locations as $location){
             $temp =App\Item::create([
-                'name'=>$item,
+                'name'=>"item from ".$location->name,
                 'price'=>rand(1000, 10000),
-                'description'=>'Description of '.$item.' in full information and details',
-                'notice'=>'Notice of '.$item.' if there is',
+                'description'=>'Description of item from '.$location->name.' in full information and details',
+                'notice'=>'Notice of item from '.$location->name.' if there is',
                 'weight'=>rand(1,10),
-                'location_id'=>rand(1,7),
+                'location_id'=>$location->id,
                 'merchant_id'=>rand(1,6)
             ]);
             $temp->categories()->attach(1);
