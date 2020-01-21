@@ -9,7 +9,6 @@ use Validator;
 
 class ItemController extends Controller
 {
-
     public function index()
     {
         $items = Item::all();
@@ -22,9 +21,11 @@ class ItemController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
+            'ch_name'=>"required",
             'price' => 'required|numeric',
             'description' => 'required',
-            'weight' => 'required|numeric',
+            'ch_description'=>"required",
+            'weight' => 'required',
             'merchant_id' => 'required',
             'location_id' => 'required',
         ]);
@@ -39,11 +40,20 @@ class ItemController extends Controller
             return ['code' => '1', 'msg' => "Item name: $request->name already existed"];
         }
 
+        $alreadyExisted = Item::where('ch_name', $request->ch_name)->exists();
+
+        if ($alreadyExisted) {
+            return ['code' => '1', 'msg' => "Item name: $request->name already existed"];
+        }
+
         $item = Item::create([
             'name' => $request->name,
+            'ch_name' => $request->ch_name,
             'price' => $request->price,
             'description' => $request->description,
+            'ch_description' => $request->ch_description,
             'notice' => $request->notice,
+            'ch_notice' => $request->ch_notice,
             'weight' => $request->weight,
             'merchant_id' => $request->merchant_id,
             'location_id' => $request->location_id,
@@ -56,10 +66,13 @@ class ItemController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
+            'ch_name'=>"required",
             'price' => 'required|numeric',
             'description' => 'required',
+            'ch_description'=> "required",
             'notice' => 'required',
-            'weight' => 'required|numeric',
+            'ch_notice'=> "required",
+            'weight' => 'required',
             'merchant_id' => 'required',
             'location_id' => 'required',
         ]);
@@ -75,9 +88,12 @@ class ItemController extends Controller
         }
         $item = Item::find($id);
         $item->name = $request->name;
+        $item->ch_name= $request->ch_name;
         $item->price = $request->price;
         $item->description = $request->description;
+        $item->ch_description= $request->ch_description;
         $item->notice = $request->notice;
+        $item->ch_notice = $request->ch_notice;
         $item->weight = $request->weight;
         $item->merchant_id = $request->merchant_id;
         $item->location_id = $request->location_id;
@@ -110,8 +126,15 @@ class ItemController extends Controller
         return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
     }
 
-    public function checkName($name){
+    public function checkName($name)
+    {
         $alreadyExisted = Item::where('name', $name)->exists();
+
+        if ($alreadyExisted) {
+            return ['code' => '1', 'msg' => "Item name: $name already existed"];
+        }
+
+        $alreadyExisted = Item::where('ch_name', $name)->exists();
 
         if ($alreadyExisted) {
             return ['code' => '1', 'msg' => "Item name: $name already existed"];

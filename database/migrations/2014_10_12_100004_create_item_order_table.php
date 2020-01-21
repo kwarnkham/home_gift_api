@@ -18,10 +18,13 @@ class CreateItemOrderTable extends Migration
             $table->unsignedBigInteger('order_id');
             $table->unsignedBigInteger('item_id');
             $table->string('name');
+            $table->string('ch_name');
             $table->integer('quantity');
             $table->integer('price');
             $table->text('description');
+            $table->text('ch_description');
             $table->text('notice');
+            $table->text('ch_notice');
             $table->double('weight');
             $table->string('location');
             $table->string('merchant');

@@ -16,7 +16,6 @@ class CreateOrdersTable extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('promotion_id')->nullable()->default(null);
             $table->string('name');
             $table->string('mobile');
             $table->string('address');
@@ -28,7 +27,6 @@ class CreateOrdersTable extends Migration
             $table->text('a_note')->nullable()->default(null);
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('promotion_id')->references('id')->on('promotions');
         });
     }
 

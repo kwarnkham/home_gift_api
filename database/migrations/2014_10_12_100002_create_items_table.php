@@ -22,7 +22,7 @@ class CreateItemsTable extends Migration
             $table->text('ch_description');
             $table->text('notice')->nullable()->default(null);
             $table->text('ch_notice')->nullable()->default(null);
-            $table->double('weight');
+            $table->string('weight');
             $table->unsignedBigInteger('merchant_id');
             $table->unsignedBigInteger('location_id');
             $table->timestamps();
