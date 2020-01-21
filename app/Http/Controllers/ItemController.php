@@ -102,6 +102,23 @@ class ItemController extends Controller
         return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
     }
 
+    public function addCategory($id, $categoryId)
+    {
+        $item = Item::find($id);
+        $item->categories()->attach($categoryId);
+        $item->refresh();
+        return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
+    }
+
+    public function checkName($name){
+        $alreadyExisted = Item::where('name', $name)->exists();
+
+        if ($alreadyExisted) {
+            return ['code' => '1', 'msg' => "Item name: $name already existed"];
+        }
+        return ['code' => '0', 'msg' => 'ok'];
+    }
+
     // public function updateName(Request $request)
     // {
     //     $validator = Validator::make($request->all(), [
@@ -131,18 +148,12 @@ class ItemController extends Controller
 
 
 
-    // public function addCategory($id, $category_id)
-    // {
-    //     $item = Item::find($id);
-    //     $item->categories()->attach($category_id);
-    //     $item->refresh();
-    //     return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
-    // }
 
-    // public function removeCategory($id, $category_id)
+
+    // public function removeCategory($id, $categoryId)
     // {
     //     $item = Item::find($id);
-    //     $item->categories()->detach($category_id);
+    //     $item->categories()->detach($categoryId);
     //     $item->refresh();
     //     return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
     // }
