@@ -8,12 +8,14 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('/provinces', 'ProvinceController@index');
 
+
 Route::post('/item', 'ItemController@store');
 Route::get('/items', 'ItemController@index');
 Route::post('/item/{id}/{categoryId}', 'ItemController@addCategory');
 Route::put('/item/{id}/categories', 'ItemController@updateCategory');
 Route::put('/item/{id}', 'ItemController@update');
 Route::get('/item/name/{name}', 'ItemController@checkName');
+Route::delete('/item/{id}', 'ItemController@destroy');
 
 Route::post('/merchant', 'MerchantController@store');
 Route::get('/merchants', 'MerchantController@index');

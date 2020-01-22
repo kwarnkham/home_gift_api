@@ -3,9 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Item extends Model
 {
+    use SoftDeletes;
     protected $guarded = ['id'];
 
     protected $hidden = [
@@ -31,10 +33,12 @@ class Item extends Model
 
     public function categories()
     {
-        return $this->belongsToMany('App\Category')->withTimestamps();;
+        return $this->belongsToMany('App\Category')->withTimestamps();
+        ;
     }
 
-    public function orders(){
+    public function orders()
+    {
         return $this->belongsToMany('App\Order')->withPivot('name', 'quantity', 'price', 'description', 'notice', 'weight', 'location_id', 'merchant_id')->withTimestamps();
     }
 }

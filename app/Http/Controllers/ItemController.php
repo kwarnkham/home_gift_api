@@ -142,6 +142,16 @@ class ItemController extends Controller
         return ['code' => '0', 'msg' => 'ok'];
     }
 
+    public function destroy($id)
+    {
+        $item = Item::where('id', $id);
+        if ($item->exists()) {
+            $item->get()[0]->delete();
+            return ['code' => '0', 'msg' => 'ok'];
+        }
+        return ['code' => '1', 'msg' => 'not found'];
+    }
+
     // public function updateName(Request $request)
     // {
     //     $validator = Validator::make($request->all(), [

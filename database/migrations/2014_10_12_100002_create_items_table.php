@@ -26,6 +26,7 @@ class CreateItemsTable extends Migration
             $table->unsignedBigInteger('merchant_id');
             $table->unsignedBigInteger('location_id');
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('merchant_id')->references('id')->on('merchants');
             $table->foreign('location_id')->references('id')->on('locations');
         });
