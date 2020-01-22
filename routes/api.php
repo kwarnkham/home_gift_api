@@ -11,8 +11,10 @@ Route::get('/provinces', 'ProvinceController@index');
 
 Route::post('/item', 'ItemController@store');
 Route::get('/items', 'ItemController@index');
+Route::get('/items/trashed', 'ItemController@indexTrashed');
 Route::post('/item/{id}/{categoryId}', 'ItemController@addCategory');
 Route::put('/item/{id}/categories', 'ItemController@updateCategory');
+Route::patch('item/{id}', 'ItemController@unDestroy');
 Route::put('/item/{id}', 'ItemController@update');
 Route::get('/item/name/{name}', 'ItemController@checkName');
 Route::delete('/item/{id}', 'ItemController@destroy');

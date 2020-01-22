@@ -15,7 +15,20 @@ class ItemController extends Controller
         return ['code' => '0', 'msg' => 'ok', 'result' => ['items' => $items]];
     }
 
+    public function indexTrashed()
+    {
+        $items = Item::onlyTrashed()->get();
+        return ['code' => '0', 'msg' => 'ok', 'result' => ['items' => $items]];
+    }
 
+    public function unDestroy($id)
+    {
+        $item = Item::withTrashed()->where('id', $id)->first();
+        if ($item->restore()) {
+            return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
+        }
+        return ['code' => '1', 'msg' => 'restore failed'];
+    }
 
     public function store(Request $request)
     {
