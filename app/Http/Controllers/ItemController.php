@@ -165,6 +165,15 @@ class ItemController extends Controller
         return ['code' => '1', 'msg' => 'not found'];
     }
 
+    public function find(Request $request)
+    {
+        $items = Item::withTrashed()->where('name', 'like', '%'.$request->name.'%')->orWhere('ch_name', 'like', '%'.$request->name.'%');
+        if ($items->exists()) {
+            return ['code' => '0', 'msg' => 'ok', 'result'=>['items' => $items->get()]];
+        } else {
+            return ['code' => '1', 'msg' => "Item \"$request->name\" is not found"];
+        }
+    }
     // public function updateName(Request $request)
     // {
     //     $validator = Validator::make($request->all(), [

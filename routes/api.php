@@ -18,6 +18,7 @@ Route::patch('item/{id}', 'ItemController@unDestroy');
 Route::put('/item/{id}', 'ItemController@update');
 Route::get('/item/name/{name}', 'ItemController@checkName');
 Route::delete('/item/{id}', 'ItemController@destroy');
+Route::get('/item/find', 'ItemController@find');
 
 Route::post('/merchant', 'MerchantController@store');
 Route::get('/merchants', 'MerchantController@index');
