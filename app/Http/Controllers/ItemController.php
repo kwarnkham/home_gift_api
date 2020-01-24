@@ -9,15 +9,15 @@ use Validator;
 
 class ItemController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $items = Item::all();
+        $items = Item::paginate($request->per_page);
         return ['code' => '0', 'msg' => 'ok', 'result' => ['items' => $items]];
     }
 
-    public function indexTrashed()
+    public function indexTrashed(Request $request)
     {
-        $items = Item::onlyTrashed()->get();
+        $items = Item::onlyTrashed()->paginate($request->per_page);
         return ['code' => '0', 'msg' => 'ok', 'result' => ['items' => $items]];
     }
 

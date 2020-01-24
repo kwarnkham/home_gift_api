@@ -8,7 +8,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('/provinces', 'ProvinceController@index');
 
-
+Route::get('/items/p', 'ItemController@indexPaginated');
 Route::post('/item', 'ItemController@store');
 Route::get('/items', 'ItemController@index');
 Route::get('/items/trashed', 'ItemController@indexTrashed');
