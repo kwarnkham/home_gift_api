@@ -17,7 +17,7 @@ class LocationsTableSeeder extends Seeder
 
         foreach ($provinces as $province) {
             $createdProvince = Province::create(['name' => $province]);
-            // Location::create(['name' => $province, 'province_id' => $createdProvince->id]);
+            Location::create(['name' => $province." Capital", 'province_id' => $createdProvince->id]);
         }
     }
 }

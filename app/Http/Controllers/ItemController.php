@@ -30,6 +30,12 @@ class ItemController extends Controller
         return ['code' => '1', 'msg' => 'restore failed'];
     }
 
+    public function find(Request $request)
+    {
+        $item = Item::where('id', $request->id)->withTrashed()->first();
+        return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
+    }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -165,9 +171,12 @@ class ItemController extends Controller
         return ['code' => '1', 'msg' => 'not found'];
     }
 
-    public function find(Request $request)
+    public function findName(Request $request)
     {
-        $items = Item::withTrashed()->where('name', 'like', '%'.$request->name.'%')->orWhere('ch_name', 'like', '%'.$request->name.'%');
+        $items = Item::where('name', 'like', '%'.$request->name.'%')->orWhere('ch_name', 'like', '%'.$request->name.'%');
+        if ($request->withTrash == 'true') {
+            $items = Item::where('name', 'like', '%'.$request->name.'%')->orWhere('ch_name', 'like', '%'.$request->name.'%')->withTrashed();
+        }
         if ($items->exists()) {
             return ['code' => '0', 'msg' => 'ok', 'result'=>['items' => $items->get()]];
         } else {
