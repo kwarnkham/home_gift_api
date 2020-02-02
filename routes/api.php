@@ -11,7 +11,6 @@ Route::get('/provinces', 'ProvinceController@index');
 Route::get('/items', 'ItemController@index');
 Route::get('/item/{id}', 'ItemController@find');
 Route::get('/items/trashed', 'ItemController@indexTrashed');
-Route::get('/item/name/{name}', 'ItemController@checkName');
 Route::get('/item/find/name/{name}', 'ItemController@findByName');
 Route::get('/item/find/category/{categoryId}', 'ItemController@findByCategory');
 Route::get('/item/find/location/{locationId}', 'ItemController@findByLocation');

@@ -15,13 +15,16 @@ class CreateItemsTable extends Migration
     {
         Schema::create('items', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name')->unique();
-            $table->string('ch_name')->unique();
+            $table->string('name');
+            $table->string('ch_name');
+            $table->string('mm_name');
             $table->integer('price');
             $table->text('description');
             $table->text('ch_description');
+            $table->text('mm_description');
             $table->text('notice')->nullable()->default(null);
             $table->text('ch_notice')->nullable()->default(null);
+            $table->text('mm_notice')->nullable()->default(null);
             $table->string('weight');
             $table->unsignedBigInteger('merchant_id');
             $table->unsignedBigInteger('location_id');

@@ -30,7 +30,7 @@ class ItemController extends Controller
             return ['code' => '1', 'msg' => 'location does not exist'];
         }
     }
-    
+
     public function index(Request $request)
     {
         $items = Item::paginate($request->per_page);
@@ -69,42 +69,39 @@ class ItemController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'ch_name'=>"required",
+            'chName' => "required",
+            'mmName' => "required",
             'price' => 'required|numeric',
             'description' => 'required',
-            'ch_description'=>"required",
+            'chDescription' => "required",
+            'mmDescription' => "required",
             'weight' => 'required',
-            'merchant_id' => 'required',
-            'location_id' => 'required',
+            'merchantId' => 'required',
+            'locationId' => 'required',
         ]);
 
         if ($validator->fails()) {
             return ['code' => '1', 'msg' => $validator->errors()->first()];
         }
 
-        $alreadyExisted = Item::where('name', $request->name)->exists();
-
-        if ($alreadyExisted) {
-            return ['code' => '1', 'msg' => "Item name: $request->name already existed"];
-        }
-
-        $alreadyExisted = Item::where('ch_name', $request->ch_name)->exists();
-
-        if ($alreadyExisted) {
-            return ['code' => '1', 'msg' => "Item name: $request->name already existed"];
-        }
-
         $item = Item::create([
             'name' => $request->name,
-            'ch_name' => $request->ch_name,
+            'ch_name' => $request->chName,
+            'mm_name' => $request->mmName,
+
             'price' => $request->price,
+
             'description' => $request->description,
-            'ch_description' => $request->ch_description,
+            'ch_description' => $request->chDescription,
+            'mm_description' => $request->mmDescription,
+
             'notice' => $request->notice,
-            'ch_notice' => $request->ch_notice,
+            'ch_notice' => $request->chNotice,
+            'mm_notice' => $request->mmNotice,
+
             'weight' => $request->weight,
-            'merchant_id' => $request->merchant_id,
-            'location_id' => $request->location_id,
+            'merchant_id' => $request->merchantId,
+            'location_id' => $request->locationId,
         ]);
 
         return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
@@ -114,12 +111,16 @@ class ItemController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'ch_name'=>"required",
+            'ch_name' => "required",
+            'mm_name' => "required",
+
             'price' => 'required|numeric',
+
             'description' => 'required',
-            'ch_description'=> "required",
-            'notice' => 'required',
-            'ch_notice'=> "required",
+            'ch_description' => "required",
+            'mm_description' => "required",
+
+
             'weight' => 'required',
             'merchant_id' => 'required',
             'location_id' => 'required',
@@ -129,19 +130,21 @@ class ItemController extends Controller
             return ['code' => '1', 'msg' => $validator->errors()->first()];
         }
 
-        $existed = Item::where('name', $request->name)->where('id', '!=', $id)->exists();
-
-        if ($existed) {
-            return ['code' => '1', 'msg' => 'Item already exist'];
-        }
         $item = Item::find($id);
         $item->name = $request->name;
-        $item->ch_name= $request->ch_name;
+        $item->ch_name = $request->ch_name;
+        $item->mm_name = $request->mm_name;
+
         $item->price = $request->price;
+
         $item->description = $request->description;
-        $item->ch_description= $request->ch_description;
+        $item->ch_description = $request->ch_description;
+        $item->mm_description = $request->mm_description;
+
         $item->notice = $request->notice;
         $item->ch_notice = $request->ch_notice;
+        $item->mm_notice = $request->mm_notice;
+
         $item->weight = $request->weight;
         $item->merchant_id = $request->merchant_id;
         $item->location_id = $request->location_id;
@@ -174,22 +177,6 @@ class ItemController extends Controller
         return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
     }
 
-    public function checkName($name)
-    {
-        $alreadyExisted = Item::where('name', $name)->exists();
-
-        if ($alreadyExisted) {
-            return ['code' => '1', 'msg' => "Item name: $name already existed"];
-        }
-
-        $alreadyExisted = Item::where('ch_name', $name)->exists();
-
-        if ($alreadyExisted) {
-            return ['code' => '1', 'msg' => "Item name: $name already existed"];
-        }
-        return ['code' => '0', 'msg' => 'ok'];
-    }
-
     public function destroy($id)
     {
         $item = Item::where('id', $id);
@@ -202,18 +189,18 @@ class ItemController extends Controller
 
     public function findByName(Request $request)
     {
-        $items = Item::where('name', 'like', '%'.$request->name.'%')->orWhere('ch_name', 'like', '%'.$request->name.'%');
+        $items = Item::where('name', 'like', '%' . $request->name . '%')->orWhere('ch_name', 'like', '%' . $request->name . '%');
         if ($request->withTrash == 'true') {
-            $items = Item::where('name', 'like', '%'.$request->name.'%')->orWhere('ch_name', 'like', '%'.$request->name.'%')->withTrashed();
+            $items = Item::where('name', 'like', '%' . $request->name . '%')->orWhere('ch_name', 'like', '%' . $request->name . '%')->withTrashed();
         }
         if ($items->exists()) {
-            return ['code' => '0', 'msg' => 'ok', 'result'=>['items' => $items->get()]];
+            return ['code' => '0', 'msg' => 'ok', 'result' => ['items' => $items->get()]];
         } else {
             return ['code' => '1', 'msg' => "Item \"$request->name\" is not found"];
         }
     }
 
-    
+
     // public function updateName(Request $request)
     // {
     //     $validator = Validator::make($request->all(), [
