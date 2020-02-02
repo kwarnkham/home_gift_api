@@ -4,14 +4,39 @@ namespace App\Http\Controllers;
 
 use App\Image;
 use App\Item;
+use App\Category;
+use App\Location;
 use Illuminate\Http\Request;
 use Validator;
 
 class ItemController extends Controller
 {
+    public function findByCategory(Request $request)
+    {
+        $category = Category::where('id', $request->categoryId)->first();
+        if ($category) {
+            return ['code' => '0', 'msg' => 'ok', 'result' => ['items' => $category->items->paginate(1)]];
+        } else {
+            return ['code' => '1', 'msg' => 'category does not exist'];
+        }
+    }
+
+    public function findByLocation(Request $request)
+    {
+        $location = Location::where('id', $request->locationId)->first();
+        if ($location) {
+            return ['code' => '0', 'msg' => 'ok', 'result' => ['items' => $location->items]];
+        } else {
+            return ['code' => '1', 'msg' => 'location does not exist'];
+        }
+    }
+    
     public function index(Request $request)
     {
         $items = Item::paginate($request->per_page);
+        if ($request->withTrash == 'true') {
+            $items = Item::withTrashed()->paginate($request->per_page);
+        }
         return ['code' => '0', 'msg' => 'ok', 'result' => ['items' => $items]];
     }
 
@@ -33,7 +58,11 @@ class ItemController extends Controller
     public function find(Request $request)
     {
         $item = Item::where('id', $request->id)->withTrashed()->first();
-        return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
+        if ($item) {
+            return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
+        } else {
+            return ['code' => '1', 'msg' => 'item does not exist'];
+        }
     }
 
     public function store(Request $request)
@@ -171,7 +200,7 @@ class ItemController extends Controller
         return ['code' => '1', 'msg' => 'not found'];
     }
 
-    public function findName(Request $request)
+    public function findByName(Request $request)
     {
         $items = Item::where('name', 'like', '%'.$request->name.'%')->orWhere('ch_name', 'like', '%'.$request->name.'%');
         if ($request->withTrash == 'true') {
@@ -183,6 +212,8 @@ class ItemController extends Controller
             return ['code' => '1', 'msg' => "Item \"$request->name\" is not found"];
         }
     }
+
+    
     // public function updateName(Request $request)
     // {
     //     $validator = Validator::make($request->all(), [
