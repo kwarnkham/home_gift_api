@@ -6,16 +6,34 @@ use App\Image;
 use App\Item;
 use App\Category;
 use App\Location;
+use App\Merchant;
+use App\Province;
 use Illuminate\Http\Request;
 use Validator;
 
 class ItemController extends Controller
 {
+    private $perPage = 10;
+    public function findByProvince(Request $request)
+    {
+        $province = Province::where('id', $request->provinceId)->first();
+        if ($province) {
+            $locations =  $province->locations;
+            $items = collect();
+            foreach ($locations as $location) {
+                $items =  $items->merge($location->items);
+            }
+            return ['code' => '0', 'msg' => 'ok', 'result' => ['items' => $items->paginate($request->per_page ?? $this->perPage)]];
+        } else {
+            return ['code' => '1', 'msg' => 'province does not exist'];
+        }
+    }
+
     public function findByCategory(Request $request)
     {
         $category = Category::where('id', $request->categoryId)->first();
         if ($category) {
-            return ['code' => '0', 'msg' => 'ok', 'result' => ['items' => $category->items->paginate(1)]];
+            return ['code' => '0', 'msg' => 'ok', 'result' => ['items' => $category->items->paginate($request->per_page ?? $this->perPage)]];
         } else {
             return ['code' => '1', 'msg' => 'category does not exist'];
         }
@@ -25,9 +43,38 @@ class ItemController extends Controller
     {
         $location = Location::where('id', $request->locationId)->first();
         if ($location) {
-            return ['code' => '0', 'msg' => 'ok', 'result' => ['items' => $location->items]];
+            return ['code' => '0', 'msg' => 'ok', 'result' => ['items' => $location->items->paginate($request->per_page ?? $this->perPage)]];
         } else {
             return ['code' => '1', 'msg' => 'location does not exist'];
+        }
+    }
+
+    public function findByMerchant(Request $request)
+    {
+        $merchant = Merchant::where('id', $request->merchantId)->first();
+        if ($merchant) {
+            return ['code' => '0', 'msg' => 'ok', 'result' => ['items' => $merchant->items->paginate($request->per_page ?? $this->perPage)]];
+        } else {
+            return ['code' => '1', 'msg' => 'merchant does not exist'];
+        }
+    }
+
+    public function findByName(Request $request)
+    {
+        $items = Item::where('name', 'like', '%' . $request->name . '%')
+            ->orWhere('ch_name', 'like', '%' . $request->name . '%')
+            ->orWhere('mm_name', 'like', '%' . $request->name . '%');
+        if ($request->withTrash == 'true') {
+            $items = Item::onlyTrashed()->where(function ($query) use ($request) {
+                $query->where('name', 'like', '%' . $request->name . '%')
+                    ->orWhere('ch_name', 'like', '%' . $request->name . '%')
+                    ->orWhere('mm_name', 'like', '%' . $request->name . '%');
+            });
+        }
+        if ($items->exists()) {
+            return ['code' => '0', 'msg' => 'ok', 'result' => ['items' => $items->paginate($request->per_page ?? $this->perPage)]];
+        } else {
+            return ['code' => '1', 'msg' => "Item \"$request->name\" is not found"];
         }
     }
 
@@ -130,7 +177,7 @@ class ItemController extends Controller
             return ['code' => '1', 'msg' => $validator->errors()->first()];
         }
 
-        $item = Item::find($id);
+        $item = Item::withTrashed()->find($id);
         $item->name = $request->name;
         $item->ch_name = $request->ch_name;
         $item->mm_name = $request->mm_name;
@@ -187,18 +234,6 @@ class ItemController extends Controller
         return ['code' => '1', 'msg' => 'not found'];
     }
 
-    public function findByName(Request $request)
-    {
-        $items = Item::where('name', 'like', '%' . $request->name . '%')->orWhere('ch_name', 'like', '%' . $request->name . '%');
-        if ($request->withTrash == 'true') {
-            $items = Item::where('name', 'like', '%' . $request->name . '%')->orWhere('ch_name', 'like', '%' . $request->name . '%')->withTrashed();
-        }
-        if ($items->exists()) {
-            return ['code' => '0', 'msg' => 'ok', 'result' => ['items' => $items->get()]];
-        } else {
-            return ['code' => '1', 'msg' => "Item \"$request->name\" is not found"];
-        }
-    }
 
 
     // public function updateName(Request $request)
