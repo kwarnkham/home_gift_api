@@ -12,9 +12,6 @@ class CategoriesTableSeeder extends Seeder
     public function run()
     {
         // factory(App\Category::class, 10)->create();
-        $categories = array('Cake', 'Drink', 'Fried', 'Meat', 'Sweet', 'Diary');
-        foreach ($categories as $category) {
-            App\Category::create(['name' => $category]);
-        }
+        App\Category::create(['name' => 'Cookie', 'ch_name' => '曲奇饼', 'mm_name' => 'ကွတ်ကီး']);
     }
 }

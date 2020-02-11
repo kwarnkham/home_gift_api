@@ -11,10 +11,6 @@ class MerchantsTableSeeder extends Seeder
      */
     public function run()
     {
-        // factory(App\Merchant::class, 10)->create();
-        $merchants= array('Myit Myit Khin', 'Shwe PaZun', 'Sein Nagar', 'SP', 'Break Talk', '77Cake');
-        foreach ($merchants as $merchant) {
-            App\Merchant::create(['name'=>$merchant]);
-        }
+        App\Merchant::create(['name' => 'J\'Donuts', 'ch_name' => 'J\'Donuts', 'mm_name' => 'J\'Donuts']);
     }
 }

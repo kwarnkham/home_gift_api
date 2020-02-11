@@ -13,11 +13,7 @@ class LocationsTableSeeder extends Seeder
      */
     public function run()
     {
-        $provinces = ['Ayeyarwady', 'Bago', 'Chin', 'Kachin', 'Kayah', 'Kayin', 'Magway', 'Mandalay', 'Mon', 'Rakhine', 'Shan', 'Sagaing', 'Tanintharyi', 'Yangon'];
-
-        foreach ($provinces as $province) {
-            $createdProvince = Province::create(['name' => $province]);
-            Location::create(['name' => $province." Capital", 'province_id' => $createdProvince->id]);
-        }
+        $createdProvince = Province::create(['name' => 'Yangon Province', 'chName' => '仰光省', 'mmName' => 'ရန်ကုန်တိုင်း']);
+        Location::create(['name' => 'Yangon', 'chName' => '仰光', 'mmName' => 'ရန်ကုန်မြို့', 'province_id' => $createdProvince->id]);
     }
 }

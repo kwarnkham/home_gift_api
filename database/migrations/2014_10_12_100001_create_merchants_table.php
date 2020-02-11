@@ -16,6 +16,8 @@ class CreateMerchantsTable extends Migration
         Schema::create('merchants', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name')->unique();
+            $table->string('ch_name');
+            $table->string('mm_name');
             $table->timestamps();
         });
     }
