@@ -8,18 +8,20 @@ use Validator;
 
 class MerchantController extends Controller
 {
-    
+
     public function index()
     {
         $merchants = Merchant::all();
         return ['code' => '0', 'msg' => 'ok', 'result' => ["merchants" => $merchants]];
     }
 
-    
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required'
+            'name' => 'required',
+            'chName' => 'required',
+            'mmName' => 'required'
         ]);
         if ($validator->fails()) {
             return ['code' => '1', 'msg' => $validator->errors()->first()];
@@ -31,7 +33,9 @@ class MerchantController extends Controller
             return ['code' => '1', 'msg' => $request->name . ' already exists'];
         }
         $merchant = Merchant::create([
-            'name' => $request->name
+            'name' => $request->name,
+            'ch_name' => $request->chName,
+            'mm_name' => $request->mmName
         ]);
 
 
@@ -43,7 +47,9 @@ class MerchantController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'id' => 'required',
-            'name' => 'required'
+            'name' => 'required',
+            'chName' => 'required',
+            'mmName' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -58,6 +64,8 @@ class MerchantController extends Controller
 
         $merchant = Merchant::find($request->id);
         $merchant->name = $request->name;
+        $merchant->ch_name = $request->chName;
+        $merchant->mm_name = $request->mmName;
         $merchant->save();
 
         return ['code' => '0', 'msg' => 'ok', 'result' => ["merchant" => $merchant]];

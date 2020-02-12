@@ -6,7 +6,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/provinces', 'ProvinceController@index');
 
 Route::get('/items', 'ItemController@index');
 Route::get('/item/{id}', 'ItemController@find');
@@ -33,6 +32,10 @@ Route::put('/merchant', 'MerchantController@update');
 Route::post('/location', 'LocationController@store');
 Route::get('/locations', 'LocationController@index');
 Route::put('/location', 'LocationController@update');
+
+Route::post('/province', 'ProvinceController@store');
+Route::get('/provinces', 'ProvinceController@index');
+// Route::put('/location', 'LocationController@update');
 
 Route::post('/category', 'CategoryController@store');
 Route::get('/categories', 'CategoryController@index');
