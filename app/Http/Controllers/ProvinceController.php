@@ -10,6 +10,6 @@ class ProvinceController extends Controller
     public function index()
     {
         $provinces = Province::all();
-        return ['code' => '0', 'msg' => 'ok', 'result' => ['provinces' => $provinces]];
+        return ['code' => '0', 'msg' => 'ok', 'result' => ['provinces' => $provinces->load('locations')]];
     }
 }

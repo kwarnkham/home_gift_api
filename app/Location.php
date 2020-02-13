@@ -10,7 +10,6 @@ class Location extends Model
     protected $hidden = [
         'created_at', 'updated_at',
     ];
-    protected $with = ['province'];
 
     public function items()
     {
