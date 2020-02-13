@@ -22,7 +22,9 @@ class LocationController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'province_id' => 'required|numeric'
+            'chName' => 'required',
+            'mmName' => 'required',
+            'provinceId' => 'required|numeric'
         ]);
         if ($validator->fails()) {
             return ['code' => '1', 'msg' => $validator->errors()->first()];
@@ -36,7 +38,9 @@ class LocationController extends Controller
 
         $location = Location::create([
             'name' => $request->name,
-            'province_id' => $request->province_id
+            'ch_name' => $request->chName,
+            'mm_name' => $request->mmName,
+            'province_id' => $request->provinceId,
         ]);
 
         return ['code' => '0', 'msg' => 'ok', 'result' => ['location' => $location]];
@@ -47,8 +51,10 @@ class LocationController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'id' => 'required',
+            'chName' => 'required',
+            'mmName' => 'required',
             'name' => 'required',
-            'province_id' => 'required|numeric'
+            'provinceId' => 'required|numeric'
         ]);
 
         if ($validator->fails()) {
@@ -62,7 +68,9 @@ class LocationController extends Controller
         }
         $location = Location::find($request->id);
         $location->name = $request->name;
-        $location->province_id = $request->province_id;
+        $location->ch_name = $request->chName;
+        $location->mm_name = $request->mmName;
+        $location->province_id = $request->provinceId;
         $location->save();
 
         return ['code' => '0', 'msg' => 'ok', 'result' => ['location' => $location]];
