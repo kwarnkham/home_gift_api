@@ -17,19 +17,12 @@ class CreateItemOrderTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('order_id');
             $table->unsignedBigInteger('item_id');
-            $table->string('name');
-            $table->string('ch_name');
+            $table->integer('unit_price');
             $table->integer('quantity');
-            $table->integer('price');
-            $table->text('description');
-            $table->text('ch_description');
-            $table->text('notice');
-            $table->text('ch_notice');
-            $table->double('weight');
-            $table->string('location');
-            $table->string('merchant');
             $table->timestamps();
             $table->unique(['order_id', 'item_id']);
+            $table->foreign('order_id')->references('id')->on('orders');
+            $table->foreign('item_id')->references('id')->on('items');
         });
     }
 
