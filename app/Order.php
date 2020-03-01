@@ -9,13 +9,7 @@ class Order extends Model
 {
     protected $guarded = ['id'];
 
-    protected $with = ['promotion','items'];
-
-
-    public function promotion()
-    {
-        return $this->belongsTo('App\Promotion');
-    }
+    protected $with = ['items'];
 
     public function user()
     {
@@ -25,7 +19,7 @@ class Order extends Model
 
     public function items()
     {
-        return $this->belongsToMany('App\Item')->withPivot('name', 'quantity', 'price', 'description', 'notice', 'weight', 'location', 'merchant')->withTimestamps();
+        return $this->belongsToMany('App\Item')->withPivot('quantity', 'unit_price')->withTimestamps();
     }
 
     protected $dispatchesEvents = [

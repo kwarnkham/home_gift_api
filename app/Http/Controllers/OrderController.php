@@ -35,28 +35,12 @@ class OrderController extends Controller
         $order = Order::create($inputData);
         $items = json_decode($request->items);
         foreach ($items as $cartItem) {
-            // $order->items()->attach($cartItem->item->id, [
-            //     'name' => $cartItem->item->name,
-            //     'quantity' => $cartItem->quantity,
-            //     'price' => $cartItem->item->price,
-            //     'description' => $cartItem->item->description,
-            //     'notice' => $cartItem->item->notice,
-            //     'weight' => $cartItem->item->weight,
-            //     'location' => $cartItem->item->location,
-            //     'merchant' => $cartItem->item->merchant
-            // ]);
             $order->items()->attach($cartItem->item->id, [
-                'name' => $cartItem->item->name,
                 'quantity' => $cartItem->quantity,
-                'price' => $cartItem->item->price,
-                'description' => $cartItem->item->description,
-                'notice' => $cartItem->item->notice,
-                'weight' => $cartItem->item->weight,
-                'location' => $cartItem->item->location->name,
-                'merchant' => $cartItem->item->merchant->name
+                'unit_price' => $cartItem->item->price,
             ]);
         }
-        $order = Order::find($order->id);
+        $order->refresh();
         return ['code' => '0', 'msg' => 'ok', 'result' => ['order' => $order]];
     }
 
