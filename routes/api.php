@@ -6,7 +6,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
+Route::get('/delivery-fees', 'DeliveryFeesController@find');
 Route::get('/items', 'ItemController@index');
 Route::get('/item/{id}', 'ItemController@find');
 Route::get('/items/trashed', 'ItemController@indexTrashed');
