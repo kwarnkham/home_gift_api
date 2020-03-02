@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Validator;
 use App\Order;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -17,7 +18,6 @@ class OrderController extends Controller
             'mobile' => 'required',
             'address' => 'required',
             'payment' => 'required',
-            'delivery_fees' => 'required',
             'amount' => 'required',
             'items' => 'required',
         ]);
@@ -27,17 +27,22 @@ class OrderController extends Controller
         }
 
         $user_id = Auth::user()->id;
-        $inputData = $request->only('name', 'mobile', 'address', 'payment', 'delivery_fees', 'amount');
+        $inputData = $request->only('name', 'mobile', 'address', 'payment', 'amount');
         if ($request->c_note != null) {
             $inputData['c_note'] = $request->c_note;
         }
         $inputData['user_id'] = $user_id;
+        $inputData['delivery_fees']= DB::table('delivery_fees')
+        ->join('active_delivery_fees', 'delivery_fees.id', 'active_delivery_fees.delivery_fees_id')
+        ->where('active_delivery_fees.id', 1)
+        ->select('delivery_fees.*')
+        ->first()->fees;
         $order = Order::create($inputData);
         $items = json_decode($request->items);
         foreach ($items as $cartItem) {
-            $order->items()->attach($cartItem->item->id, [
+            $order->items()->attach($cartItem->id, [
                 'quantity' => $cartItem->quantity,
-                'unit_price' => $cartItem->item->price,
+                'unit_price' => $cartItem->price,
             ]);
         }
         $order->refresh();
