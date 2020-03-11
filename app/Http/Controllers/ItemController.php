@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Image;
-use App\Item;
 use App\Category;
+use App\Item;
 use App\Location;
 use App\Merchant;
 use App\Province;
@@ -14,19 +13,21 @@ use Validator;
 class ItemController extends Controller
 {
     private $perPage = 10;
+
     public function findByProvince(Request $request)
     {
         $province = Province::where('id', $request->provinceId)->first();
         if ($province) {
-            $locations =  $province->locations;
+            $locations = $province->locations;
             $items = collect();
             foreach ($locations as $location) {
-                $items =  $items->merge($location->items);
+                $items = $items->merge($location->items);
             }
+
             return ['code' => '0', 'msg' => 'ok', 'result' => ['items' => $items->paginate($request->per_page ?? $this->perPage)]];
-        } else {
-            return ['code' => '1', 'msg' => 'province does not exist'];
         }
+
+        return ['code' => '1', 'msg' => 'province does not exist'];
     }
 
     public function findByCategory(Request $request)
@@ -34,9 +35,9 @@ class ItemController extends Controller
         $category = Category::where('id', $request->categoryId)->first();
         if ($category) {
             return ['code' => '0', 'msg' => 'ok', 'result' => ['items' => $category->items->paginate($request->per_page ?? $this->perPage)]];
-        } else {
-            return ['code' => '1', 'msg' => 'category does not exist'];
         }
+
+        return ['code' => '1', 'msg' => 'category does not exist'];
     }
 
     public function findByLocation(Request $request)
@@ -44,9 +45,9 @@ class ItemController extends Controller
         $location = Location::where('id', $request->locationId)->first();
         if ($location) {
             return ['code' => '0', 'msg' => 'ok', 'result' => ['items' => $location->items->paginate($request->per_page ?? $this->perPage)]];
-        } else {
-            return ['code' => '1', 'msg' => 'location does not exist'];
         }
+
+        return ['code' => '1', 'msg' => 'location does not exist'];
     }
 
     public function findByMerchant(Request $request)
@@ -54,42 +55,46 @@ class ItemController extends Controller
         $merchant = Merchant::where('id', $request->merchantId)->first();
         if ($merchant) {
             return ['code' => '0', 'msg' => 'ok', 'result' => ['items' => $merchant->items->paginate($request->per_page ?? $this->perPage)]];
-        } else {
-            return ['code' => '1', 'msg' => 'merchant does not exist'];
         }
+
+        return ['code' => '1', 'msg' => 'merchant does not exist'];
     }
 
     public function findByName(Request $request)
     {
-        $items = Item::where('name', 'like', '%' . $request->name . '%')
-            ->orWhere('ch_name', 'like', '%' . $request->name . '%')
-            ->orWhere('mm_name', 'like', '%' . $request->name . '%');
-        if ($request->withTrash == 'true') {
+        $items = Item::where('name', 'like', '%'.$request->name.'%')
+            ->orWhere('ch_name', 'like', '%'.$request->name.'%')
+            ->orWhere('mm_name', 'like', '%'.$request->name.'%')
+        ;
+        if ('true' == $request->withTrash) {
             $items = Item::onlyTrashed()->where(function ($query) use ($request) {
-                $query->where('name', 'like', '%' . $request->name . '%')
-                    ->orWhere('ch_name', 'like', '%' . $request->name . '%')
-                    ->orWhere('mm_name', 'like', '%' . $request->name . '%');
+                $query->where('name', 'like', '%'.$request->name.'%')
+                    ->orWhere('ch_name', 'like', '%'.$request->name.'%')
+                    ->orWhere('mm_name', 'like', '%'.$request->name.'%')
+                ;
             });
         }
         if ($items->exists()) {
             return ['code' => '0', 'msg' => 'ok', 'result' => ['items' => $items->paginate($request->per_page ?? $this->perPage)]];
-        } else {
-            return ['code' => '1', 'msg' => "Item \"$request->name\" is not found"];
         }
+
+        return ['code' => '1', 'msg' => "Item \"{$request->name}\" is not found"];
     }
 
     public function index(Request $request)
     {
         $items = Item::paginate($request->per_page);
-        if ($request->withTrash == 'true') {
+        if ('true' == $request->withTrash) {
             $items = Item::withTrashed()->paginate($request->per_page);
         }
+
         return ['code' => '0', 'msg' => 'ok', 'result' => ['items' => $items]];
     }
 
     public function indexTrashed(Request $request)
     {
         $items = Item::onlyTrashed()->paginate($request->per_page);
+
         return ['code' => '0', 'msg' => 'ok', 'result' => ['items' => $items]];
     }
 
@@ -99,6 +104,7 @@ class ItemController extends Controller
         if ($item->restore()) {
             return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
         }
+
         return ['code' => '1', 'msg' => 'restore failed'];
     }
 
@@ -107,21 +113,21 @@ class ItemController extends Controller
         $item = Item::where('id', $request->id)->withTrashed()->first();
         if ($item) {
             return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
-        } else {
-            return ['code' => '1', 'msg' => 'item does not exist'];
         }
+
+        return ['code' => '1', 'msg' => 'item does not exist'];
     }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'chName' => "required",
-            'mmName' => "required",
+            'chName' => 'required',
+            'mmName' => 'required',
             'price' => 'required|numeric',
             'description' => 'required',
-            'chDescription' => "required",
-            'mmDescription' => "required",
+            'chDescription' => 'required',
+            'mmDescription' => 'required',
             'weight' => 'required',
             'merchantId' => 'required',
             'locationId' => 'required',
@@ -158,15 +164,14 @@ class ItemController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'ch_name' => "required",
-            'mm_name' => "required",
+            'ch_name' => 'required',
+            'mm_name' => 'required',
 
             'price' => 'required|numeric',
 
             'description' => 'required',
-            'ch_description' => "required",
-            'mm_description' => "required",
-
+            'ch_description' => 'required',
+            'mm_description' => 'required',
 
             'weight' => 'required',
             'merchant_id' => 'required',
@@ -197,9 +202,9 @@ class ItemController extends Controller
         $item->location_id = $request->location_id;
         $item->save();
         $item->refresh();
+
         return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
     }
-
 
     public function updateCategory($id, Request $request)
     {
@@ -213,6 +218,7 @@ class ItemController extends Controller
         $item = Item::find($id);
         $item->categories()->sync($request->categories);
         $item->refresh();
+
         return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
     }
 
@@ -221,6 +227,7 @@ class ItemController extends Controller
         $item = Item::find($id);
         $item->categories()->attach($categoryId);
         $item->refresh();
+
         return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
     }
 
@@ -229,12 +236,12 @@ class ItemController extends Controller
         $item = Item::where('id', $id);
         if ($item->exists()) {
             $item->get()[0]->delete();
+
             return ['code' => '0', 'msg' => 'ok'];
         }
+
         return ['code' => '1', 'msg' => 'not found'];
     }
-
-
 
     // public function updateName(Request $request)
     // {
@@ -262,10 +269,6 @@ class ItemController extends Controller
     //     return ['code' => '0', 'msg' => 'ok', 'result' => ['item' => $item]];
     // }
 }
-
-
-
-
 
     // public function removeCategory($id, $categoryId)
     // {
