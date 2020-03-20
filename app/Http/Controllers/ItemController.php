@@ -54,7 +54,12 @@ class ItemController extends Controller
     {
         $merchant = Merchant::where('id', $request->merchantId)->first();
         if ($merchant) {
-            return ['code' => '0', 'msg' => 'ok', 'result' => ['items' => $merchant->items->paginate($request->per_page ?? $this->perPage)]];
+            $items = Item::where('merchant_id', $merchant->id);
+            if ('true' == $request->withTrash) {
+                $items = $items->withTrashed();
+            }
+
+            return ['code' => '0', 'msg' => 'ok', 'result' => ['items' => $items->paginate($request->per_page ?? $this->perPage)]];
         }
 
         return ['code' => '1', 'msg' => 'merchant does not exist'];
