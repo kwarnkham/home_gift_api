@@ -7,6 +7,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('/delivery-fees', 'DeliveryFeesController@find');
+Route::get('/all-delivery-fees', 'DeliveryFeesController@index');
+Route::put('/delivery-fees', 'DeliveryFeesController@update');
 Route::get('/items', 'ItemController@index');
 Route::get('/item/{id}', 'ItemController@find');
 Route::get('/items/trashed', 'ItemController@indexTrashed');
@@ -16,7 +18,6 @@ Route::get('/items/find/location/{locationId}', 'ItemController@findByLocation')
 Route::get('/items/find/merchant/{merchantId}', 'ItemController@findByMerchant');
 Route::get('/items/find/province/{provinceId}', 'ItemController@findByProvince');
 // Route::get('/items/find/{}')
-
 
 Route::post('/item', 'ItemController@store');
 Route::post('/item/{id}/{categoryId}', 'ItemController@addCategory');
