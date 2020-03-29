@@ -41,6 +41,9 @@ Route::get('/provinces', 'ProvinceController@index');
 Route::post('/category', 'CategoryController@store');
 Route::get('/categories', 'CategoryController@index');
 Route::put('/category', 'CategoryController@update');
+Route::put('/category/make-a/{id}', 'CategoryController@makeCategoryA');
+Route::get('/categories/get-a', 'CategoryController@indexCategoryA');
+Route::put("/category/unmake-a/{id}", 'CategoryController@unMakeCategoryA');
 
 Route::post('/image', 'ImageController@store');
 Route::delete('/image/{id}', 'ImageController@destroy')->where('id', '[0-9]+');
