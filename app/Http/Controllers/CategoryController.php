@@ -102,4 +102,42 @@ class CategoryController extends Controller
         ->select('categories.*')->get();
         return ['code' => '0', 'msg' => 'ok', 'result'=>['categories'=>$categories]];
     }
+    
+    public function makeCategoryB($id)
+    {
+        $success = DB::table('b_categories')->insert(
+            ['category_id'=>$id, "created_at"=>now(), "updated_at"=>now()]
+        );
+        if ($success) {
+            return ['code' => '0', 'msg' => 'ok',];
+        }
+    }
+
+    public function indexCategoryB()
+    {
+        $categories = DB::table('categories')
+        ->join('b_categories', 'categories.id', 'b_categories.category_id')
+        ->select('categories.*')->get();
+        return ['code' => '0', 'msg' => 'ok', 'result'=>['categories'=>$categories]];
+    }
+
+    public function destroyCategoryB($id)
+    {
+        $success = DB::table('b_categories')->where('category_id', $id)->delete();
+        if ($success == 1) {
+            return ['code' => '0', 'msg' => 'ok',];
+        }
+    }
+
+    public function joinAB($aId, $bId)
+    {
+        $aCategoryId= DB::table('a_categories')->where('category_id', $aId)->select('id')->get()->first()->id;
+        $bCategoryId= DB::table('b_categories')->where('category_id', $bId)->select('id')->get()->first()->id;
+        $success = DB::table('a_b_categories')->insert(
+            ['a_category_id'=>$aCategoryId, 'b_category_id'=> $bCategoryId,"created_at"=>now(), "updated_at"=>now()]
+        );
+        if ($success) {
+            return ['code' => '0', 'msg' => 'ok',];
+        }
+    }
 }

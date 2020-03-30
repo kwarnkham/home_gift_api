@@ -15,11 +15,9 @@ class CreateBCategoriesTable extends Migration
     {
         Schema::create('b_categories', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('category_id');
-            $table->unsignedBigInteger('a_category_id');
+            $table->unsignedBigInteger('category_id')->unique();
             $table->timestamps();
             $table->foreign('category_id')->references('id')->on('categories');
-            $table->foreign('a_category_id')->references('id')->on('a_categories');
         });
     }
 
