@@ -143,7 +143,7 @@ class CategoryController extends Controller
         }
     }
 
-    public function getJoindA($bId)
+    public function getJoinedA($bId)
     {
         $category= null;
         $found= DB::table('a_b_categories')->select('a_category_id')->where('b_category_id', $bId)->get();
@@ -152,8 +152,24 @@ class CategoryController extends Controller
         
 
             $category = DB::table('categories')->join('a_categories', 'categories.id', 'a_categories.category_id')
-                                            ->select('categories.*')
+                                            ->select('categories.*', 'a_categories.id as a_category_id')
                                             ->where('a_categories.id', $aId)->get()->first();
+        }
+        return ['code' => '0', 'msg' => 'ok', 'result'=>['category'=>$category]];
+    }
+
+
+    public function getJoinedB($id)
+    {
+        $category= null;
+        $found= DB::table('b_c_categories')->select('b_category_id')->where('category_id', $id)->get();
+        if (count($found)>0) {
+            $bId = $found->first()->b_category_id;
+        
+
+            $category = DB::table('categories')->join('b_categories', 'categories.id', 'b_categories.category_id')
+                                            ->select('categories.*', 'b_categories.id as b_category_id')
+                                            ->where('b_categories.id', $bId)->get()->first();
         }
         return ['code' => '0', 'msg' => 'ok', 'result'=>['category'=>$category]];
     }
@@ -171,5 +187,32 @@ class CategoryController extends Controller
             return ['code' => '0', 'msg' => 'ok'];
         }
         return ['code' => '1', 'msg' => 'fail'];
+    }
+
+    public function unJoinBC($id)
+    {
+        $success = DB::table('b_c_categories')->where('category_id', $id)->delete();
+        if ($success == 1) {
+            return ['code' => '0', 'msg' => 'ok'];
+        }
+        return ['code' => '1', 'msg' => 'fail'];
+    }
+
+    public function joinBC($bId, $id)
+    {
+        $success = DB::table('b_c_categories')->updateOrInsert(
+            ['category_id' => $id, 'b_category_id' => $bId],
+            ['category_id'=>$id, 'b_category_id'=> $bId,"created_at"=>now(), "updated_at"=>now()]
+        );
+
+        if ($success) {
+            return ['code' => '0', 'msg' => 'ok'];
+        }
+    }
+
+    public function getBC()
+    {
+        $associations = DB::table('b_c_categories')->select('id', 'b_category_id')->get();
+        return ['code' => '0', 'msg' => 'ok', 'result'=>['associations'=>$associations]];
     }
 }

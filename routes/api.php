@@ -51,9 +51,15 @@ Route::middleware('throttle:500,1')->group(function () {
     Route::post('/category/make-b/{id}', 'CategoryController@makeCategoryB');
     Route::delete('b-category/{id}', 'CategoryController@destroyCategoryB');
     Route::post('/category/join-ab/{aId}/{bId}', 'CategoryController@joinAB');
-    Route::get('/category/joinedA/{bId}', 'CategoryController@getJoindA');
+    Route::get('/category/joinedA/{bId}', 'CategoryController@getJoinedA');
     Route::get('/category/AB', 'CategoryController@getAB');
     Route::delete('category/unjoin-ab/{bId}', 'CategoryController@unJoinAB');
+
+    Route::get("/categories/get-c/{bId}", 'CategoryController@indexCategoryC');
+    Route::post('category/join-bc/{bId}/{id}', 'CategoryController@joinBC');
+    Route::get('/category/BC', 'CategoryController@getBC');
+    Route::get('/category/joinedB/{id}', 'CategoryController@getJoinedB');
+    Route::delete('category/unjoin-bc/{id}', 'CategoryController@unJoinBC');
 });
 
 
