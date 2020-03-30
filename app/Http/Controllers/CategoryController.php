@@ -80,7 +80,7 @@ class CategoryController extends Controller
             return ['code' => '1', 'msg' => 'Cannot add more'];
         }
         $idToMake = DB::table('a_categories')->where('category_id', null)->first()->id;
-        if (DB::table('a_categories')->where('id', $idToMake)->update(['category_id'=>$id])) {
+        if (DB::table('a_categories')->where('id', $idToMake)->update(['category_id'=>$id, 'updated_at'=>now()])) {
             return ['code' => '0', 'msg' => 'ok'];
         }
     }
@@ -90,7 +90,7 @@ class CategoryController extends Controller
         if ($found == 0) {
             return ['code'=>'1', 'msg'=>"$id not found"];
         }
-        DB::table('a_categories')->where('category_id', $id)->update(['category_id'=>null]);
+        DB::table('a_categories')->where('category_id', $id)->update(['category_id'=>null, 'updated_at'=>now()]);
         return ['code' => '0', 'msg' => 'ok'];
     }
 
@@ -99,7 +99,7 @@ class CategoryController extends Controller
         $categories = DB::table('categories')
         ->join('a_categories', 'categories.id', 'a_categories.category_id')
         ->where('a_categories.category_id', '!=', null)
-        ->select('categories.*')->get();
+        ->select('categories.*', 'a_categories.id as a_category_id')->get();
         return ['code' => '0', 'msg' => 'ok', 'result'=>['categories'=>$categories]];
     }
     
@@ -117,7 +117,7 @@ class CategoryController extends Controller
     {
         $categories = DB::table('categories')
         ->join('b_categories', 'categories.id', 'b_categories.category_id')
-        ->select('categories.*')->get();
+        ->select('categories.*', 'b_categories.id as b_category_id')->get();
         return ['code' => '0', 'msg' => 'ok', 'result'=>['categories'=>$categories]];
     }
 
@@ -133,11 +133,43 @@ class CategoryController extends Controller
     {
         $aCategoryId= DB::table('a_categories')->where('category_id', $aId)->select('id')->get()->first()->id;
         $bCategoryId= DB::table('b_categories')->where('category_id', $bId)->select('id')->get()->first()->id;
-        $success = DB::table('a_b_categories')->insert(
+
+        $success = DB::table('a_b_categories')->updateOrInsert(
+            ['a_category_id' => $aCategoryId, 'b_category_id' => $bCategoryId],
             ['a_category_id'=>$aCategoryId, 'b_category_id'=> $bCategoryId,"created_at"=>now(), "updated_at"=>now()]
         );
         if ($success) {
             return ['code' => '0', 'msg' => 'ok',];
         }
+    }
+
+    public function getJoindA($bId)
+    {
+        $category= null;
+        $found= DB::table('a_b_categories')->select('a_category_id')->where('b_category_id', $bId)->get();
+        if (count($found)>0) {
+            $aId = $found->first()->a_category_id;
+        
+
+            $category = DB::table('categories')->join('a_categories', 'categories.id', 'a_categories.category_id')
+                                            ->select('categories.*')
+                                            ->where('a_categories.id', $aId)->get()->first();
+        }
+        return ['code' => '0', 'msg' => 'ok', 'result'=>['category'=>$category]];
+    }
+
+    public function getAB()
+    {
+        $associations = DB::table('a_b_categories')->select('a_category_id', 'b_category_id')->get();
+        return ['code' => '0', 'msg' => 'ok', 'result'=>['associations'=>$associations]];
+    }
+
+    public function unJoinAB($bId)
+    {
+        $success = DB::table('a_b_categories')->where('b_category_id', $bId)->delete();
+        if ($success == 1) {
+            return ['code' => '0', 'msg' => 'ok'];
+        }
+        return ['code' => '1', 'msg' => 'fail'];
     }
 }
