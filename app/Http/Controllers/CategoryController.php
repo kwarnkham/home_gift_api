@@ -215,4 +215,40 @@ class CategoryController extends Controller
         $associations = DB::table('b_c_categories')->select('id', 'b_category_id')->get();
         return ['code' => '0', 'msg' => 'ok', 'result'=>['associations'=>$associations]];
     }
+
+    public function getBCategoriesOfA($id)
+    {
+        $found = DB::table('a_categories')->select('id')->where('category_id', $id)->get();
+        if (count($found)>0) {
+            $aId = $found->first()->id;
+            
+            $bIds = DB::table('a_b_categories')->select('b_category_id')
+                                            ->where('a_category_id', $aId)
+                                            ->get()->pluck('b_category_id');
+            
+    
+            $ids =DB::table('b_categories')->whereIn('id', $bIds)->select('category_id')->get()->pluck('category_id');
+            $categories = DB::table('categories')->whereIn('id', $ids)->get();
+            return ['code' => '0', 'msg' => 'ok', 'result'=>['categories'=>$categories]];
+            return $categories;
+        }
+        return ['code' => '0', 'msg' => 'ok', 'result'=>['categories'=>[]]];
+    }
+
+    public function getCCategoriesOfB($id)
+    {
+        $found =DB::table('b_categories')->select('id')->where('category_id', $id)->get();
+        if (count($found)>0) {
+            $bId = $found->first()->id;
+            
+            $ids = DB::table('b_c_categories')->select('category_id')
+                                            ->where('b_category_id', $bId)
+                                            ->get()->pluck('category_id');
+            
+            $categories = DB::table('categories')->whereIn('id', $ids)->get();
+            return ['code' => '0', 'msg' => 'ok', 'result'=>['categories'=>$categories]];
+            return $categories;
+        }
+        return ['code' => '0', 'msg' => 'ok', 'result'=>['categories'=>[]]];
+    }
 }
