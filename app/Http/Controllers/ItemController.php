@@ -55,8 +55,8 @@ class ItemController extends Controller
         $merchant = Merchant::where('id', $request->merchantId)->first();
         if ($merchant) {
             $items = Item::where('merchant_id', $merchant->id);
-            if ('true' == $request->withTrash) {
-                $items = $items->withTrashed();
+            if ('true' == $request->trashed) {
+                $items = $items->onlyTrashed();
             }
 
             return ['code' => '0', 'msg' => 'ok', 'result' => ['items' => $items->paginate($request->per_page ?? $this->perPage)]];
@@ -71,7 +71,7 @@ class ItemController extends Controller
             ->orWhere('ch_name', 'like', '%'.$request->name.'%')
             ->orWhere('mm_name', 'like', '%'.$request->name.'%')
         ;
-        if ('true' == $request->withTrash) {
+        if ('true' == $request->trashed) {
             $items = Item::onlyTrashed()->where(function ($query) use ($request) {
                 $query->where('name', 'like', '%'.$request->name.'%')
                     ->orWhere('ch_name', 'like', '%'.$request->name.'%')
