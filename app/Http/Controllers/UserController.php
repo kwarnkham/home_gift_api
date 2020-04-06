@@ -7,6 +7,7 @@ use Validator;
 use App\User;
 use Str;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -16,7 +17,7 @@ class UserController extends Controller
             'name' => 'required',
             'mobile' => 'required|numeric|digits_between:7,9',
             'address' => 'required',
-            'password' => 'required|min:6|confirmed'
+            'password' => 'required|min:5|confirmed'
         ]);
         if ($validator->fails()) {
             return ['code' => '1', 'msg' => $validator->errors()->first()];
@@ -30,7 +31,7 @@ class UserController extends Controller
         $user = User::create($inputData);
         $token = Str::random(60);
         $user->forceFill([
-            'api_token' => hash('sha256', $token),
+            'api_token' => $token,
         ])->save();
         return ['code' => '0', 'msg' => 'ok', 'result' => ['user' => $user, 'token' => $token]];
     }
@@ -55,7 +56,7 @@ class UserController extends Controller
             $user = Auth::user();
             $token = Str::random(60);
             $user->forceFill([
-                'api_token' => hash('sha256', $token),
+                'api_token' => $token,
             ])->save();
             return ['code' => '0', 'msg' => 'ok', 'result' => ['user' => $user]];
         }
@@ -74,5 +75,25 @@ class UserController extends Controller
     public function reponseToInvalidToken()
     {
         return ['code' => '1', 'msg' => 'Login again'];
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'password' => 'required|min:5',
+            'new' => "required|min:5|confirmed"
+        ]);
+        if ($validator->fails()) {
+            return ['code' => '1', 'msg' => $validator->errors()->first()];
+        }
+        $user = Auth::user();
+        if (Hash::check($request->password, $user->password)) {
+            $user->password = bcrypt($request->new);
+            if ($user->save()) {
+                return ['code'=>'0', 'msg'=>'ok'];
+            }
+        } else {
+            return ['code'=>'1', 'msg'=>'Password is not correct'];
+        }
     }
 }
