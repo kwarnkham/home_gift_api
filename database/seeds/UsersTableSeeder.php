@@ -13,9 +13,10 @@ class UsersTableSeeder extends Seeder
     {
         App\User::create([
             'name' => 'Moon',
-            'mobile' => '1231231',
+            'mobile' => '797167172',
             'address' => 'A4',
-            'password' => bcrypt('123123')
+            'password' => bcrypt('ninja'),
+            'is_admin' => true
         ]);
     }
 }
