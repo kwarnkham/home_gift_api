@@ -31,7 +31,8 @@ class UserController extends Controller
         $user = User::create($inputData);
         $token = Str::random(60);
         $user->forceFill([
-            'api_token' => hash('sha256', $token),
+            // 'api_token' => hash('sha256', $token),
+            'api_token' => $token
         ])->save();
         return ['code' => '0', 'msg' => 'ok', 'result' => ['user' => $user, 'token' => $token]];
     }
@@ -56,7 +57,7 @@ class UserController extends Controller
             $user = Auth::user();
             $token = Str::random(60);
             $user->forceFill([
-                'api_token' => hash('sha256', $token),
+                'api_token' => $token
             ])->save();
             return ['code' => '0', 'msg' => 'ok', 'result' => ['user' => $user]];
         }
