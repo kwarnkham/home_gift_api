@@ -96,4 +96,33 @@ class UserController extends Controller
             return ['code'=>'1', 'msg'=>'Password is not correct'];
         }
     }
+
+    public function update(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'mobile' => 'required|numeric|digits_between:7,9',
+            'address' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return ['code' => '1', 'msg' => $validator->errors()->first()];
+        }
+        $user = Auth::user();
+        $isExisted = User::where([
+            ['mobile', $request->mobile],
+            ['id', '!=', $user->id],
+        ])->exists();
+        if ($isExisted) {
+            return ['code' => '1', 'msg' => 'Phone number already existed'];
+        }
+        
+        $user->name = $request->name;
+        $user->mobile = $request->mobile;
+        $user->address = $request->address;
+        if ($user->save()) {
+            return ['code' => '0', 'msg' => 'ok', 'result'=>['user'=>$user]];
+        } else {
+            return ['code' => '1', 'msg' => 'Update fail'];
+        }
+    }
 }
