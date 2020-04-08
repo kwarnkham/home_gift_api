@@ -32,7 +32,7 @@ Route::put('/merchant', 'MerchantController@update');
 
 Route::post('/location', 'LocationController@store');
 Route::get('/locations', 'LocationController@index');
-Route::put('/location', 'LocationController@update');
+Route::put('/location', 'LocationController@update')->middleware('auth:api', 'checkAdmin');
 
 Route::post('/province', 'ProvinceController@store');
 Route::get('/provinces', 'ProvinceController@index');
