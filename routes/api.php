@@ -18,7 +18,6 @@ Route::middleware(['auth:api', 'checkAdmin'])->group(function () {
     Route::post('/location', 'LocationController@store');
     Route::put('/location', 'LocationController@update');
     Route::post('/province', 'ProvinceController@store');
-    Route::get('/provinces', 'ProvinceController@index');
 
     Route::put('/category/make-a/{id}', 'CategoryController@makeCategoryA');
     Route::put("/category/unmake-a/{id}", 'CategoryController@unMakeCategoryA');
@@ -50,6 +49,7 @@ Route::get('/items/find/province/{provinceId}', 'ItemController@findByProvince')
 
 Route::get('/merchants', 'MerchantController@index');
 Route::get('/locations', 'LocationController@index');
+Route::get('/provinces', 'ProvinceController@index');
 Route::get('/categories', 'CategoryController@index');
 Route::get('/categories/get-a', 'CategoryController@indexCategoryA');
 Route::get("/categories/get-b", 'CategoryController@indexCategoryB');
