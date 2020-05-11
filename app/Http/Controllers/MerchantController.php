@@ -8,10 +8,15 @@ use Validator;
 
 class MerchantController extends Controller
 {
-
     public function index()
     {
-        $merchants = Merchant::all();
+        $temp = Merchant::all();
+        $merchants = [];
+        foreach ($temp as $key => $merchant) {
+            if (count($merchant->items)>0) {
+                array_push($merchants, $merchant);
+            }
+        }
         return ['code' => '0', 'msg' => 'ok', 'result' => ["merchants" => $merchants]];
     }
 
