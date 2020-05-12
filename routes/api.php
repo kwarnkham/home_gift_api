@@ -34,6 +34,7 @@ Route::middleware(['auth:api', 'checkAdmin'])->group(function () {
     Route::delete('/image/{id}', 'ImageController@destroy')->where('id', '[0-9]+');
 
     Route::post('/order/action/{id}', 'OrderController@update')->where('id', '[0-9]+');
+    Route::get('/orders', 'OrderController@index');
 });
 Route::get('/delivery-fees', 'DeliveryFeesController@find');
 Route::get('/all-delivery-fees', 'DeliveryFeesController@index');
@@ -70,4 +71,3 @@ Route::put('/user', 'UserController@update')->middleware('auth:api');
 
 Route::post('/order', 'OrderController@store')->middleware('auth:api');
 Route::get('/order/user', 'OrderController@userOrder')->middleware('auth:api');
-Route::get('/orders', 'OrderController@index');

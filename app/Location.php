@@ -16,7 +16,13 @@ class Location extends Model
         return $this->hasMany('App\Item');
     }
 
-    public function province(){
+    public function province()
+    {
         return $this->belongsTo('App\Province');
+    }
+
+    public function townships()
+    {
+        return $this->hasMany('App\Township');
     }
 }

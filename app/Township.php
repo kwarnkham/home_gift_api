@@ -8,8 +8,8 @@ class Township extends Model
 {
     protected $guarded = ['id'];
     
-    public function city()
+    public function location()
     {
-        return $this->belongsTo('App\City');
+        return $this->belongsTo('App\Location');
     }
 }
