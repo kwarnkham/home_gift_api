@@ -14,7 +14,7 @@ class AddAddressIdToUsers extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->unsignedBigInteger('address_id')->default(1);
+            $table->unsignedBigInteger('address_id');
             $table->foreign('address_id')->references('id')->on('addresses');
         });
     }
