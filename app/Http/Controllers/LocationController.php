@@ -11,7 +11,7 @@ class LocationController extends Controller
     public function index()
     {
         $locations = Location::all();
-        return ['code' => '0', 'msg' => 'ok', 'result' => ['locations' => $locations->load('province')]];
+        return ['code' => '0', 'msg' => 'ok', 'result' => ['locations' => $locations]];
     }
 
     public function indexPaginated()

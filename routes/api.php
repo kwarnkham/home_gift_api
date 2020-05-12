@@ -71,3 +71,5 @@ Route::put('/user', 'UserController@update')->middleware('auth:api');
 
 Route::post('/order', 'OrderController@store')->middleware('auth:api');
 Route::get('/order/user', 'OrderController@userOrder')->middleware('auth:api');
+Route::get('/townships', 'TownshipController@index');
+Route::get('/townships/find/location/{locationId}', 'TownshipController@findByLocation');
