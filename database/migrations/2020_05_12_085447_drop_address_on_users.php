@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddAddressIdToUsers extends Migration
+class DropAddressOnUsers extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,7 @@ class AddAddressIdToUsers extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->unsignedBigInteger('address_id')->default(1);
-            $table->foreign('address_id')->references('id')->on('addresses');
+            $table->dropColumn('address');
         });
     }
 
@@ -26,8 +25,6 @@ class AddAddressIdToUsers extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
-        });
+        //
     }
 }

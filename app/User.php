@@ -41,4 +41,9 @@ class User extends Authenticatable
     {
         return 'mobile';
     }
+
+    public function address()
+    {
+        return $this->belongsTo('App\Address');
+    }
 }
