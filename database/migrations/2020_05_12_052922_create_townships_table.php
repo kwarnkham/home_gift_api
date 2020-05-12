@@ -18,7 +18,7 @@ class CreateTownshipsTable extends Migration
             $table->string('name');
             $table->unsignedBigInteger('city_id');
             $table->timestamps();
-            $table->foreign('city_id')->references('id')->on('city');
+            $table->foreign('city_id')->references('id')->on('cities');
         });
     }
 
