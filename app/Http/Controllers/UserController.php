@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Validator;
 use App\User;
+use App\Address;
 use Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -17,7 +18,9 @@ class UserController extends Controller
             'name' => 'required',
             'mobile' => 'required|numeric|digits_between:7,9',
             'address' => 'required',
-            'password' => 'required|min:5|confirmed'
+            'password' => 'required|min:5|confirmed',
+            'locationId'=>'required|numeric',
+            'townshipId'=>'required|numeric'
         ]);
         if ($validator->fails()) {
             return ['code' => '1', 'msg' => $validator->errors()->first()];
@@ -26,7 +29,8 @@ class UserController extends Controller
         if ($isExisted) {
             return ['code' => '1', 'msg' => 'Phone number already existed'];
         }
-        $inputData = $request->only(['name', 'mobile', 'address', 'password']);
+        $address = Address::create($request->only(['locationId', 'townshipId', 'address']));
+        $inputData = $request->only(['name', 'mobile', 'password']);
         $inputData['password'] = bcrypt($inputData['password']);
         $user = User::create($inputData);
         $token = Str::random(60);
