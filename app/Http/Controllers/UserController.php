@@ -9,9 +9,26 @@ use App\Address;
 use Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use GuzzleHttp\Client;
 
 class UserController extends Controller
 {
+    public function test()
+    {
+        $client = new Client();
+        $response = $client->post('https://boomsms.net/api/sms/json', [
+            'headers' => [
+                'Accept' => 'application/json',
+                'Authorization' => 'Bearer '.env('BOOM_SMS_TOKEN'),
+            ],
+            'form_params' => [
+                'from' => 'sms info',
+                'text' => 'Welcome to HomeGift. Your code is 1204',
+                'to' => '09797167172'
+            ],
+        ]);
+        return $response->getBody();
+    }
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -40,6 +57,8 @@ class UserController extends Controller
             // 'api_token' => hash('sha256', $token),
             'api_token' => $token
         ])->save();
+        
+
         return ['code' => '0', 'msg' => 'ok', 'result' => ['user' => $user]];
     }
 
