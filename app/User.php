@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'mobile', 'password', 'address', 'is_admin'
+        'name', 'mobile', 'password', 'address', 'is_admin', 'address_id'
     ];
 
     /**
@@ -25,8 +25,10 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token', 'created_at', 'updated_at', 'email', 'email_verified_at'
+        'password', 'remember_token', 'updated_at', 'email', 'email_verified_at', 'mobile_verification_code'
     ];
+
+    protected $with = ['address'];
 
     /**
      * The attributes that should be cast to native types.
@@ -44,6 +46,6 @@ class User extends Authenticatable
 
     public function address()
     {
-        return $this->hasOne('App\Address');
+        return $this->belongsTo('App\Address');
     }
 }

@@ -26,4 +26,9 @@ class Location extends Model
     {
         return $this->hasMany('App\Township');
     }
+
+    public function address()
+    {
+        return $this->hasMany('App\Address');
+    }
 }

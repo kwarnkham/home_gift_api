@@ -19,8 +19,8 @@ class UserController extends Controller
             'mobile' => 'required|numeric|digits_between:7,9',
             'address' => 'required',
             'password' => 'required|min:5|confirmed',
-            'locationId'=>'required|numeric',
-            'townshipId'=>'required|numeric'
+            'location_id'=>'required|numeric',
+            'township_id'=>'required|numeric'
         ]);
         if ($validator->fails()) {
             return ['code' => '1', 'msg' => $validator->errors()->first()];
@@ -29,16 +29,18 @@ class UserController extends Controller
         if ($isExisted) {
             return ['code' => '1', 'msg' => 'Phone number already existed'];
         }
-        $address = Address::create($request->only(['locationId', 'townshipId', 'address']));
+        $address = Address::create($request->only(['location_id', 'township_id', 'address']));
         $inputData = $request->only(['name', 'mobile', 'password']);
         $inputData['password'] = bcrypt($inputData['password']);
-        $user = User::create($inputData);
+        $inputData['address_id'] = $address->id;
+        // return $inputData;
+        $user = User::create(['name'=>$inputData['name'], 'mobile'=>$inputData['mobile'], 'password'=> $inputData['password'], 'address_id'=>$inputData['address_id']]);
         $token = Str::random(60);
         $user->forceFill([
             // 'api_token' => hash('sha256', $token),
             'api_token' => $token
         ])->save();
-        return ['code' => '0', 'msg' => 'ok', 'result' => ['user' => $user, 'token' => $token]];
+        return ['code' => '0', 'msg' => 'ok', 'result' => ['user' => $user]];
     }
 
     public function show()
@@ -106,26 +108,38 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'mobile' => 'required|numeric|digits_between:7,9',
-            'address' => 'required',
         ]);
         if ($validator->fails()) {
             return ['code' => '1', 'msg' => $validator->errors()->first()];
         }
         $user = Auth::user();
-        $isExisted = User::where([
-            ['mobile', $request->mobile],
-            ['id', '!=', $user->id],
-        ])->exists();
-        if ($isExisted) {
-            return ['code' => '1', 'msg' => 'Phone number already existed'];
-        }
-        
         $user->name = $request->name;
-        $user->mobile = $request->mobile;
-        $user->address = $request->address;
+
         if ($user->save()) {
             return ['code' => '0', 'msg' => 'ok', 'result'=>['user'=>$user]];
+        } else {
+            return ['code' => '1', 'msg' => 'Update fail'];
+        }
+    }
+
+    public function updateAddress(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'address' => 'required',
+            'location_id'=>'required|numeric',
+            'township_id'=>'required|numeric',
+            'address_id'=>"required|numeric"
+        ]);
+        if ($validator->fails()) {
+            return ['code' => '1', 'msg' => $validator->errors()->first()];
+        }
+        $address = Address::find($request->address_id);
+        $address->address = $request->address;
+        $address->location_id = $request->location_id;
+        $address->township_id = $request->township_id;
+
+        if ($address->save()) {
+            return ['code' => '0', 'msg' => 'ok', 'result'=>['address'=>$address]];
         } else {
             return ['code' => '1', 'msg' => 'Update fail'];
         }

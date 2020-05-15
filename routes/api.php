@@ -68,6 +68,7 @@ Route::get('/user', 'UserController@show')->middleware('auth:api')->name('checkT
 Route::get('/tokenExpired', 'UserController@reponseToInvalidToken')->name('tokenExpired');
 Route::put('/user/password', 'UserController@updatePassword')->middleware('auth:api');
 Route::put('/user', 'UserController@update')->middleware('auth:api');
+Route::put('/user/address', 'UserController@updateAddress')->middleware('auth:api');
 
 Route::post('/order', 'OrderController@store')->middleware('auth:api');
 Route::get('/order/user', 'OrderController@userOrder')->middleware('auth:api');

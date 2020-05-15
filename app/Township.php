@@ -15,4 +15,9 @@ class Township extends Model
     {
         return $this->belongsTo('App\Location');
     }
+
+    public function address()
+    {
+        return $this->hasMany('App\Address');
+    }
 }
