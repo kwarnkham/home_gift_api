@@ -25,7 +25,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token', 'updated_at', 'email', 'email_verified_at', 'mobile_verification_code'
+        'password', 'remember_token', 'email', 'email_verified_at',
     ];
 
     protected $with = ['address'];
@@ -38,6 +38,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function getMobileVerificationCodeAttribute($value)
+    {
+        if ($value != null) {
+            return true;
+        }
+        return false;
+    }
 
     public function username()
     {

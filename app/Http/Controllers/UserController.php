@@ -13,22 +13,6 @@ use GuzzleHttp\Client;
 
 class UserController extends Controller
 {
-    public function test()
-    {
-        $client = new Client();
-        $response = $client->post('https://boomsms.net/api/sms/json', [
-            'headers' => [
-                'Accept' => 'application/json',
-                'Authorization' => 'Bearer '.env('BOOM_SMS_TOKEN'),
-            ],
-            'form_params' => [
-                'from' => 'sms info',
-                'text' => 'Welcome to HomeGift. Your code is 1204',
-                'to' => '09797167172'
-            ],
-        ]);
-        return $response->getBody();
-    }
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -50,15 +34,27 @@ class UserController extends Controller
         $inputData = $request->only(['name', 'mobile', 'password']);
         $inputData['password'] = bcrypt($inputData['password']);
         $inputData['address_id'] = $address->id;
-        // return $inputData;
+        a;
         $user = User::create(['name'=>$inputData['name'], 'mobile'=>$inputData['mobile'], 'password'=> $inputData['password'], 'address_id'=>$inputData['address_id']]);
         $token = Str::random(60);
+        $code=rand(1000, 9999);
         $user->forceFill([
-            // 'api_token' => hash('sha256', $token),
+            'mobile_verification_code' => bcrypt($code),
             'api_token' => $token
         ])->save();
+        $client = new Client();
+        $response = $client->post('https://boomsms.net/api/sms/json', [
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Authorization' => 'Bearer '.env('BOOM_SMS_TOKEN'),
+                ],
+                'form_params' => [
+                    'from' => 'sms info',
+                    'text' => 'Welcome to HomeGift. Your code is '.$code,
+                    'to' => '09797167172'
+                ],
+            ]);
         
-
         return ['code' => '0', 'msg' => 'ok', 'result' => ['user' => $user]];
     }
 
@@ -161,6 +157,25 @@ class UserController extends Controller
             return ['code' => '0', 'msg' => 'ok', 'result'=>['address'=>$address]];
         } else {
             return ['code' => '1', 'msg' => 'Update fail'];
+        }
+    }
+
+    public function verify(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'code' => 'required|numeric',
+        ]);
+        if ($validator->fails()) {
+            return ['code' => '1', 'msg' => $validator->errors()->first()];
+        }
+        $user = Auth::user();
+        if (Hash::check($request->code, $user->mobile_verification_code)) {
+            $user->mobile_verified_at = now();
+            if ($user->save()) {
+                return ['code'=>'0', 'msg'=>'ok'];
+            }
+        } else {
+            return ['code'=>'1', 'msg'=>'Code is incorrect'];
         }
     }
 }
