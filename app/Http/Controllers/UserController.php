@@ -212,4 +212,14 @@ class UserController extends Controller
         }
         return ['code' => '1', 'msg' => 'wait for some time and try again'];
     }
+
+    public function forgetPassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'mobile' => 'required|numeric|digits_between:7,9',
+        ]);
+        if ($validator->fails()) {
+            return ['code' => '1', 'msg' => $validator->errors()->first()];
+        }
+    }
 }
