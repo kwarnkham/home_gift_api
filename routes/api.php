@@ -77,3 +77,4 @@ Route::get('/townships', 'TownshipController@index');
 Route::get('/townships/find/location/{locationId}', 'TownshipController@findByLocation');
 Route::get('/test', 'UserController@test')->middleware('auth:api');
 Route::post('/resend', 'UserController@sendCode')->middleware('auth:api');
+Route::get('/order-rule/{lang}', 'OrderController@getOrderRule');
