@@ -16,6 +16,7 @@ class AddMobileVerification extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->timestamp('mobile_verified_at')->nullable();
             $table->string('mobile_verification_code')->nullable()->default(null);
+            $table->timestamp('code_created_at')->nullable();
         });
     }
 

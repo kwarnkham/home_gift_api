@@ -189,7 +189,7 @@ class UserController extends Controller
     public function sendCode(Request $request)
     {
         $user = Auth::user();
-        if (now()->diffInRealMinutes($user->updated_at) >= 2) {
+        if (now()->diffInRealMinutes($user->updated_at) >= 0) {
             // $code=rand(1000, 9999);
             $code=1111;
             $user->forceFill([
@@ -210,5 +210,6 @@ class UserController extends Controller
             ProcessMobileVerificationCode::dispatch($user)->delay(now()->addMinutes(2));
             return ['code' => '0', 'msg' => 'ok', 'result' => ['user' => $user]];
         }
+        return ['code' => '1', 'msg' => 'wait for some time and try again'];
     }
 }
