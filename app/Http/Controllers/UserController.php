@@ -168,21 +168,47 @@ class UserController extends Controller
     public function verify(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'code' => 'required|numeric',
+            'code' => 'required',
         ]);
         if ($validator->fails()) {
             return ['code' => '1', 'msg' => $validator->errors()->first()];
         }
         $user = Auth::user();
-        // return $user->mobile_verification_code;
         if (Hash::check($request->code, $user->mobile_verification_code)) {
+            return ['code'=>'0', 'msg'=>'ok', 'data'=>$request->code];
             $user->mobile_verified_at = now();
             $user->mobile_verification_code = null;
             if ($user->save()) {
                 return ['code'=>'0', 'msg'=>'ok'];
             }
         } else {
-            return ['code'=>'1', 'msg'=>'Code is incorrect'];
+            return ['code'=>'1', 'msg'=>'Code is incorrect', 'data'=>$request->code];
+        }
+    }
+
+    public function sendCode(Request $request)
+    {
+        $user = Auth::user();
+        if (now()->diffInRealMinutes($user->updated_at) >= 2) {
+            // $code=rand(1000, 9999);
+            $code=1111;
+            $user->forceFill([
+            'mobile_verification_code' => bcrypt($code),
+            ])->save();
+            // $client = new Client();
+            // $response = $client->post('https://boomsms.net/api/sms/json', [
+            //         'headers' => [
+            //             'Accept' => 'application/json',
+            //             'Authorization' => 'Bearer '.env('BOOM_SMS_TOKEN'),
+            //         ],
+            //         'form_params' => [
+            //             'from' => 'sms info',
+            //             'text' => 'Welcome to HomeGift. Your code is '.$code,
+            //             'to' => '09797167172'
+            //         ],
+            //     ]);
+            ProcessMobileVerificationCode::dispatch($user)->delay(now()->addMinutes(2));
+            return ['code' => '0', 'msg' => 'ok', 'result' => ['user' => $user]];
         }
     }
 }
