@@ -30,6 +30,8 @@ class User extends Authenticatable
 
     protected $with = ['address'];
 
+    protected $appends = ['has_code'];
+
     /**
      * The attributes that should be cast to native types.
      *
@@ -39,12 +41,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function getMobileVerificationCodeAttribute($value)
+    public function getHasCodeAttribute()
     {
-        if ($value != null) {
-            return true;
-        }
-        return false;
+        return $this->mobile_verification_code != null;
     }
 
     public function username()

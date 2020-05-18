@@ -10,9 +10,14 @@ use Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use GuzzleHttp\Client;
+use App\Jobs\ProcessMobileVerificationCode;
 
 class UserController extends Controller
 {
+    public function test()
+    {
+        ProcessMobileVerificationCode::dispatch(Auth::user())->delay(now()->addMinutes(1));
+    }
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -34,27 +39,27 @@ class UserController extends Controller
         $inputData = $request->only(['name', 'mobile', 'password']);
         $inputData['password'] = bcrypt($inputData['password']);
         $inputData['address_id'] = $address->id;
-        a;
         $user = User::create(['name'=>$inputData['name'], 'mobile'=>$inputData['mobile'], 'password'=> $inputData['password'], 'address_id'=>$inputData['address_id']]);
         $token = Str::random(60);
-        $code=rand(1000, 9999);
+        // $code=rand(1000, 9999);
+        $code=1111;
         $user->forceFill([
             'mobile_verification_code' => bcrypt($code),
             'api_token' => $token
         ])->save();
-        $client = new Client();
-        $response = $client->post('https://boomsms.net/api/sms/json', [
-                'headers' => [
-                    'Accept' => 'application/json',
-                    'Authorization' => 'Bearer '.env('BOOM_SMS_TOKEN'),
-                ],
-                'form_params' => [
-                    'from' => 'sms info',
-                    'text' => 'Welcome to HomeGift. Your code is '.$code,
-                    'to' => '09797167172'
-                ],
-            ]);
-        
+        // $client = new Client();
+        // $response = $client->post('https://boomsms.net/api/sms/json', [
+        //         'headers' => [
+        //             'Accept' => 'application/json',
+        //             'Authorization' => 'Bearer '.env('BOOM_SMS_TOKEN'),
+        //         ],
+        //         'form_params' => [
+        //             'from' => 'sms info',
+        //             'text' => 'Welcome to HomeGift. Your code is '.$code,
+        //             'to' => '09797167172'
+        //         ],
+        //     ]);
+        ProcessMobileVerificationCode::dispatch($user)->delay(now()->addMinutes(2));
         return ['code' => '0', 'msg' => 'ok', 'result' => ['user' => $user]];
     }
 
@@ -169,8 +174,10 @@ class UserController extends Controller
             return ['code' => '1', 'msg' => $validator->errors()->first()];
         }
         $user = Auth::user();
+        // return $user->mobile_verification_code;
         if (Hash::check($request->code, $user->mobile_verification_code)) {
             $user->mobile_verified_at = now();
+            $user->mobile_verification_code = null;
             if ($user->save()) {
                 return ['code'=>'0', 'msg'=>'ok'];
             }
