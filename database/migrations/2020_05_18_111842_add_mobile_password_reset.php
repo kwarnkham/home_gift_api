@@ -15,6 +15,8 @@ class AddPasswordResetAtToUsers extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->timestamp('password_reset_at')->nullable();
+            $table->string('password_reset_code')->nullable()->default(null);
+            $table->timestamp('password_code_created_at')->nullable();
         });
     }
 

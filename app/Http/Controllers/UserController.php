@@ -43,23 +43,23 @@ class UserController extends Controller
         $token = Str::random(60);
         $code=rand(1000, 9999);
         $user->forceFill([
-            'mobile_verification_code' => bcrypt($code),
+            'mobile_verification_code' => bcrypt(1111),
             'code_created_at' => now(),
             'api_token' => $token
         ])->save();
         $user->refresh();
-        $client = new Client();
-        $response = $client->post('https://boomsms.net/api/sms/json', [
-                'headers' => [
-                    'Accept' => 'application/json',
-                    'Authorization' => 'Bearer '.env('BOOM_SMS_TOKEN'),
-                ],
-                'form_params' => [
-                    'from' => 'sms info',
-                    'text' => $code.' is your code. Welcome to HomeGift',
-                    'to' => '09'.$user->mobile
-                ],
-            ]);
+        // $client = new Client();
+        // $response = $client->post('https://boomsms.net/api/sms/json', [
+        //         'headers' => [
+        //             'Accept' => 'application/json',
+        //             'Authorization' => 'Bearer '.env('BOOM_SMS_TOKEN'),
+        //         ],
+        //         'form_params' => [
+        //             'from' => 'sms info',
+        //             'text' => $code.' is your code. Welcome to HomeGift',
+        //             'to' => '09'.$user->mobile
+        //         ],
+        //     ]);
         ProcessMobileVerificationCode::dispatch($user)->delay(now()->addMinutes(2));
         return ['code' => '0', 'msg' => 'ok', 'result' => ['user' => $user]];
     }
@@ -220,6 +220,11 @@ class UserController extends Controller
         ]);
         if ($validator->fails()) {
             return ['code' => '1', 'msg' => $validator->errors()->first()];
+        }
+        $user = User::where('mobile', $request->mobile)->get();
+        if (count($user) == 1) {
+        } else {
+            return ['code' => '1', 'msg' => 'mobile number not found'];
         }
     }
 }
