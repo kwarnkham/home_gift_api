@@ -78,3 +78,5 @@ Route::get('/townships/find/location/{locationId}', 'TownshipController@findByLo
 Route::get('/test', 'UserController@test')->middleware('auth:api');
 Route::post('/resend', 'UserController@sendCode')->middleware('auth:api');
 Route::get('/order-rule/{lang}', 'OrderController@getOrderRule');
+Route::post('/validate-mobile', 'UserController@validateMobile');
+Route::post('/reset-password', 'UserController@forgetPassword');

@@ -43,23 +43,23 @@ class UserController extends Controller
         $token = Str::random(60);
         $code=rand(1000, 9999);
         $user->forceFill([
-            'mobile_verification_code' => bcrypt(1111),
+            'mobile_verification_code' => bcrypt($code),
             'code_created_at' => now(),
             'api_token' => $token
         ])->save();
         $user->refresh();
-        // $client = new Client();
-        // $response = $client->post('https://boomsms.net/api/sms/json', [
-        //         'headers' => [
-        //             'Accept' => 'application/json',
-        //             'Authorization' => 'Bearer '.env('BOOM_SMS_TOKEN'),
-        //         ],
-        //         'form_params' => [
-        //             'from' => 'sms info',
-        //             'text' => $code.' is your code. Welcome to HomeGift',
-        //             'to' => '09'.$user->mobile
-        //         ],
-        //     ]);
+        $client = new Client();
+        $response = $client->post('https://boomsms.net/api/sms/json', [
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Authorization' => 'Bearer '.env('BOOM_SMS_TOKEN'),
+                ],
+                'form_params' => [
+                    'from' => 'sms info',
+                    'text' => $code.' is your code. Welcome to HomeGift',
+                    'to' => '09'.$user->mobile
+                ],
+            ]);
         ProcessMobileVerificationCode::dispatch($user)->delay(now()->addMinutes(2));
         return ['code' => '0', 'msg' => 'ok', 'result' => ['user' => $user]];
     }
@@ -189,7 +189,7 @@ class UserController extends Controller
     public function sendCode(Request $request)
     {
         $user = Auth::user();
-        if (now()->diffInRealMinutes($user->code_created_at) >= 0) {
+        if (now()->diffInRealSeconds($user->code_created_at) >= 120) {
             $code=rand(1000, 9999);
             $user->code_created_at = now();
             $user->mobile_verification_code = bcrypt($code);
@@ -217,12 +217,61 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'mobile' => 'required|numeric|digits_between:7,9',
+            'code' => 'required',
+            'password' => 'required|min:5|confirmed',
         ]);
         if ($validator->fails()) {
             return ['code' => '1', 'msg' => $validator->errors()->first()];
         }
-        $user = User::where('mobile', $request->mobile)->get();
-        if (count($user) == 1) {
+        $user = User::where('mobile', $request->mobile)->first();
+        if (Hash::check($request->code, $user->password_reset_code)) {
+            $user->password_reset_at = now();
+            $user->password_reset_code = null;
+            $user->mobile_verified_at = now();
+            $user->mobile_verification_code = null;
+            $user->password = bcrypt($request->password);
+            if ($user->save()) {
+                $user->refresh();
+                return ['code' => '0', 'msg' => 'ok'];
+            }
+        } else {
+            return ['code' => '1', 'msg' => 'Invalid code'];
+        }
+    }
+
+    public function validateMobile(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'mobile' => 'required|numeric|digits_between:7,9',
+        ]);
+        if ($validator->fails()) {
+            return ['code' => '1', 'msg' => $validator->errors()->first()];
+        }
+        $count = User::where('mobile', $request->mobile)->get();
+        if (count($count) == 1) {
+            $user = $count[0];
+            if ($user->password_code_created_at == null||now()->diffInRealSeconds($user->password_code_created_at) >= 86400) {
+                $code=rand(1000, 9999);
+                $user->password_code_created_at = now();
+                $user->password_reset_code = bcrypt($code);
+                $user->save();
+                $user->refresh();
+                $client = new Client();
+                $response = $client->post('https://boomsms.net/api/sms/json', [
+                        'headers' => [
+                            'Accept' => 'application/json',
+                            'Authorization' => 'Bearer '.env('BOOM_SMS_TOKEN'),
+                        ],
+                        'form_params' => [
+                            'from' => 'sms info',
+                            'text' => $code.' is your code. Welcome to HomeGift',
+                            'to' => '09'.$user->mobile
+                        ],
+                    ]);
+                ProcessMobileVerificationCode::dispatch($user)->delay(now()->addMinutes(2));
+                return ['code' => '0', 'msg' => 'ok'];
+            }
+            return ['code' => '0', 'msg' => 'ok'];
         } else {
             return ['code' => '1', 'msg' => 'mobile number not found'];
         }
