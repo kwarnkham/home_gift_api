@@ -14,10 +14,6 @@ use App\Jobs\ProcessMobileVerificationCode;
 
 class UserController extends Controller
 {
-    public function test()
-    {
-        ProcessMobileVerificationCode::dispatch(Auth::user())->delay(now()->addMinutes(1));
-    }
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -268,7 +264,6 @@ class UserController extends Controller
                             'to' => '09'.$user->mobile
                         ],
                     ]);
-                ProcessMobileVerificationCode::dispatch($user)->delay(now()->addMinutes(2));
                 return ['code' => '0', 'msg' => 'ok'];
             }
             return ['code' => '0', 'msg' => 'ok'];
