@@ -55,7 +55,7 @@ class UserController extends Controller
                     'Authorization' => 'Bearer '.env('BOOM_SMS_TOKEN'),
                 ],
                 'form_params' => [
-                    'from' => 'sms info',
+                    'from' => 'BOOM SMS',
                     'text' => $code.' is your code. Welcome to HomeGift',
                     'to' => '09'.$user->mobile
                 ],
@@ -202,7 +202,7 @@ class UserController extends Controller
                         'Authorization' => 'Bearer '.env('BOOM_SMS_TOKEN'),
                     ],
                     'form_params' => [
-                        'from' => 'sms info',
+                        'from' => 'BOOM SMS',
                         'text' => $code.' is your code. Welcome to HomeGift',
                         'to' => '09'.$user->mobile
                     ],
@@ -263,7 +263,7 @@ class UserController extends Controller
                             'Authorization' => 'Bearer '.env('BOOM_SMS_TOKEN'),
                         ],
                         'form_params' => [
-                            'from' => 'sms info',
+                            'from' => 'BOOM SMS',
                             'text' => $code.' is your code. Welcome to HomeGift',
                             'to' => '09'.$user->mobile
                         ],
