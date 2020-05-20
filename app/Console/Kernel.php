@@ -24,8 +24,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        $schedule->call(function () {
+            DB::table('users')->where('code_number', '>=', 3)->update(['code_number' => 0]);
+        })->daily();
     }
 
     /**

@@ -43,21 +43,21 @@ class UserController extends Controller
             'code_created_at' => now(),
             'api_token' => $token
         ])->save();
-        // $client = new Client();
-        // $response = $client->post('https://boomsms.net/api/sms/json', [
-        //         'headers' => [
-        //             'Accept' => 'application/json',
-        //             'Authorization' => 'Bearer '.env('BOOM_SMS_TOKEN'),
-        //         ],
-        //         'form_params' => [
-        //             'from' => 'BOOM SMS',
-        //             'text' => $code.' is your code. Welcome to HomeGift',
-        //             'to' => '09'.$user->mobile
-        //         ],
-        //     ]);
+        $client = new Client();
+        $response = $client->post('https://boomsms.net/api/sms/json', [
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Authorization' => 'Bearer '.env('BOOM_SMS_TOKEN'),
+                ],
+                'form_params' => [
+                    'from' => 'BOOM SMS',
+                    'text' => $code.' is your code. Welcome to HomeGift',
+                    'to' => '09'.$user->mobile
+                ],
+            ]);
         $user->code_number =1;
         if ($user->save()) {
-            $use->refresh();
+            $user->refresh();
             ProcessMobileVerificationCode::dispatch($user)->delay(now()->addMinutes(2));
             return ['code' => '0', 'msg' => 'ok', 'result' => ['user' => $user]];
         }
@@ -188,25 +188,25 @@ class UserController extends Controller
     public function sendCode(Request $request)
     {
         $user = Auth::user();
-        if (now()->diffInRealSeconds($user->code_created_at) >= 120 && $user->code_number <=3) {
+        if (now()->diffInRealSeconds($user->code_created_at) >= 120 && $user->code_number <=2) {
             $code=rand(1000, 9999);
             $user->code_created_at = now();
             $user->mobile_verification_code = bcrypt($code);
-            // $client = new Client();
-            // $response = $client->post('https://boomsms.net/api/sms/json', [
-            //         'headers' => [
-            //             'Accept' => 'application/json',
-            //             'Authorization' => 'Bearer '.env('BOOM_SMS_TOKEN'),
-            //         ],
-            //         'form_params' => [
-            //             'from' => 'BOOM SMS',
-            //             'text' => $code.' is your code. Welcome to HomeGift',
-            //             'to' => '09'.$user->mobile
-            //         ],
-            //     ]);
+            $client = new Client();
+            $response = $client->post('https://boomsms.net/api/sms/json', [
+                    'headers' => [
+                        'Accept' => 'application/json',
+                        'Authorization' => 'Bearer '.env('BOOM_SMS_TOKEN'),
+                    ],
+                    'form_params' => [
+                        'from' => 'BOOM SMS',
+                        'text' => $code.' is your code. Welcome to HomeGift',
+                        'to' => '09'.$user->mobile
+                    ],
+                ]);
             $user->code_number += 1;
             if ($user->save()) {
-                $use->refresh();
+                $user->refresh();
                 ProcessMobileVerificationCode::dispatch($user)->delay(now()->addMinutes(2));
                 return ['code' => '0', 'msg' => 'ok', 'result' => ['user' => $user]];
             }
