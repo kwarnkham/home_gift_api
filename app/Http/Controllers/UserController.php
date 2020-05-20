@@ -55,7 +55,7 @@ class UserController extends Controller
         //             'to' => '09'.$user->mobile
         //         ],
         //     ]);
-        $user->code_number+=1;
+        $user->code_number =1;
         if ($user->save()) {
             $use->refresh();
             ProcessMobileVerificationCode::dispatch($user)->delay(now()->addMinutes(2));
