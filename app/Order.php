@@ -3,7 +3,6 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Events\OrderCreated;
 
 class Order extends Model
 {
@@ -16,13 +15,8 @@ class Order extends Model
         return $this->belongsTo('App\User');
     }
 
-
     public function items()
     {
         return $this->belongsToMany('App\Item')->withPivot('quantity', 'unit_price')->withTimestamps();
     }
-
-    protected $dispatchesEvents = [
-        'created' => OrderCreated::class,
-    ];
 }
