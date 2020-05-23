@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Filesystem Disk
@@ -26,7 +25,7 @@ return [
     |
     */
 
-    'cloud' => env('FILESYSTEM_CLOUD', 's3'),
+    'cloud' => env('FILESYSTEM_CLOUD', 'spaces'),
 
     /*
     |--------------------------------------------------------------------------
@@ -42,7 +41,6 @@ return [
     */
 
     'disks' => [
-
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),
@@ -64,6 +62,14 @@ return [
             'url' => env('AWS_URL'),
         ],
 
+        'spaces' => [
+            'driver' => 's3',
+            'key' => env('DO_SPACES_ACCESS_KEY_ID'),
+            'secret' => env('DO_SPACES_SECRET_ACCESS_KEY'),
+            'region' => env('DO_SPACES_DEFAULT_REGION'),
+            'bucket' => env('DO_SPACES_BUCKET'),
+            'url' => env('DO_SPACES_URL'),
+            'endpoint' => env('DO_SPACES_ENDPOINT'),
+        ],
     ],
-
 ];
