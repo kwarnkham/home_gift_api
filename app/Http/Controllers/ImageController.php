@@ -27,7 +27,7 @@ class ImageController extends Controller
 
         foreach ($request->file('files') as $image) {
             // $saveImage = basename(Storage::putFile('public/item_images', $image));
-            $saveImage = basename(Storage::disk('spaces')->putFile('item_images', $image));
+            $saveImage = basename(Storage::disk('spaces')->putFile('item_images', $image, 'public'));
             Image::create(['name' => $saveImage, 'item_id' => $request->item_id]);
         }
         $items = Item::all();
