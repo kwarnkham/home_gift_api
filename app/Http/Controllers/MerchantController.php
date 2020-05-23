@@ -2,31 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Merchant;
+use Illuminate\Http\Request;
 use Validator;
 
 class MerchantController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $temp = Merchant::all();
-        $merchants = [];
-        foreach ($temp as $key => $merchant) {
-            if (count($merchant->items)>0) {
-                array_push($merchants, $merchant);
+        $merchants = $temp;
+        if ('1' != $request->all) {
+            $merchants = [];
+            foreach ($temp as $key => $merchant) {
+                if (count($merchant->items) > 0) {
+                    array_push($merchants, $merchant);
+                }
             }
         }
-        return ['code' => '0', 'msg' => 'ok', 'result' => ["merchants" => $merchants]];
-    }
 
+        return ['code' => '0', 'msg' => 'ok', 'result' => ['merchants' => $merchants]];
+    }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'chName' => 'required',
-            'mmName' => 'required'
+            'mmName' => 'required',
         ]);
         if ($validator->fails()) {
             return ['code' => '1', 'msg' => $validator->errors()->first()];
@@ -35,18 +38,16 @@ class MerchantController extends Controller
         $is_existed_merchant = Merchant::where('name', $request->name)->exists();
 
         if ($is_existed_merchant) {
-            return ['code' => '1', 'msg' => $request->name . ' already exists'];
+            return ['code' => '1', 'msg' => $request->name.' already exists'];
         }
         $merchant = Merchant::create([
             'name' => $request->name,
             'ch_name' => $request->chName,
-            'mm_name' => $request->mmName
+            'mm_name' => $request->mmName,
         ]);
 
-
-        return ['code' => '0', 'msg' => 'ok', 'result' => ["merchant" => $merchant]];
+        return ['code' => '0', 'msg' => 'ok', 'result' => ['merchant' => $merchant]];
     }
-
 
     public function update(Request $request)
     {
@@ -54,7 +55,7 @@ class MerchantController extends Controller
             'id' => 'required',
             'name' => 'required',
             'chName' => 'required',
-            'mmName' => 'required'
+            'mmName' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -64,7 +65,7 @@ class MerchantController extends Controller
         $is_existed_merchant = Merchant::where('name', $request->name)->exists();
 
         if ($is_existed_merchant) {
-            return ['code' => '1', 'msg' => $request->name . ' already exist'];
+            return ['code' => '1', 'msg' => $request->name.' already exist'];
         }
 
         $merchant = Merchant::find($request->id);
@@ -73,6 +74,6 @@ class MerchantController extends Controller
         $merchant->mm_name = $request->mmName;
         $merchant->save();
 
-        return ['code' => '0', 'msg' => 'ok', 'result' => ["merchant" => $merchant]];
+        return ['code' => '0', 'msg' => 'ok', 'result' => ['merchant' => $merchant]];
     }
 }
