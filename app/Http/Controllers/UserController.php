@@ -289,6 +289,6 @@ class UserController extends Controller
 
     public function getVersion(Request $request)
     {
-        return 1;
+        return ['code' => '0', 'msg' => 'ok', 'result' => ['version' => '1.0']];
     }
 }
