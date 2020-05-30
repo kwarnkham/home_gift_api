@@ -289,6 +289,6 @@ class UserController extends Controller
 
     public function getVersion(Request $request)
     {
-        return ['code' => '0', 'msg' => 'ok', 'result' => ['version' => ['android' => '0.0.1', 'ios' => '']]];
+        return ['code' => '0', 'msg' => 'ok', 'result' => ['version' => ['android' => '0.0.1', 'ios' => '0.0.1']]];
     }
 }
