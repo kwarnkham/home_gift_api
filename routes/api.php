@@ -49,7 +49,7 @@ Route::get('/items/find/province/{provinceId}', 'ItemController@findByProvince')
 Route::get('/merchants', 'MerchantController@index');
 Route::get('/locations', 'LocationController@index');
 Route::get('/provinces', 'ProvinceController@index');
-Route::get('/categories', 'CategoryController@index')->middleware('auth:api');
+Route::get('/categories', 'CategoryController@index');
 Route::get('/categories/get-a', 'CategoryController@indexCategoryA');
 Route::get('/categories/get-b', 'CategoryController@indexCategoryB');
 Route::get('/categories/get-b/{id}', 'CategoryController@getBCategoriesOfA');
