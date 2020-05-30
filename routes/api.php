@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-
 Route::middleware(['auth:api', 'checkAdmin'])->group(function () {
     Route::put('/delivery-fees', 'DeliveryFeesController@update');
 
@@ -20,7 +18,7 @@ Route::middleware(['auth:api', 'checkAdmin'])->group(function () {
     Route::post('/province', 'ProvinceController@store');
 
     Route::put('/category/make-a/{id}', 'CategoryController@makeCategoryA');
-    Route::put("/category/unmake-a/{id}", 'CategoryController@unMakeCategoryA');
+    Route::put('/category/unmake-a/{id}', 'CategoryController@unMakeCategoryA');
     Route::post('/category', 'CategoryController@store');
     Route::put('/category', 'CategoryController@update');
     Route::post('/category/make-b/{id}', 'CategoryController@makeCategoryB');
@@ -53,14 +51,14 @@ Route::get('/locations', 'LocationController@index');
 Route::get('/provinces', 'ProvinceController@index');
 Route::get('/categories', 'CategoryController@index');
 Route::get('/categories/get-a', 'CategoryController@indexCategoryA');
-Route::get("/categories/get-b", 'CategoryController@indexCategoryB');
-Route::get("/categories/get-b/{id}", 'CategoryController@getBCategoriesOfA');
+Route::get('/categories/get-b', 'CategoryController@indexCategoryB');
+Route::get('/categories/get-b/{id}', 'CategoryController@getBCategoriesOfA');
 Route::get('/category/joinedA/{bId}', 'CategoryController@getJoinedA');
 Route::get('/category/AB', 'CategoryController@getAB');
 Route::get('/category/BC', 'CategoryController@getBC');
 Route::get('/category/joinedB/{id}', 'CategoryController@getJoinedB');
-Route::get("/categories/get-c/{id}", 'CategoryController@getCCategoriesOfB');
-    
+Route::get('/categories/get-c/{id}', 'CategoryController@getCCategoriesOfB');
+
 Route::post('/user', 'UserController@store');
 Route::post('/login', 'UserController@login');
 Route::post('/logout', 'UserController@logout')->middleware('auth:api');
@@ -80,3 +78,4 @@ Route::post('/resend', 'UserController@sendCode')->middleware('auth:api');
 Route::get('/order-rule/{lang}', 'OrderController@getOrderRule');
 Route::post('/validate-mobile', 'UserController@validateMobile');
 Route::post('/reset-password', 'UserController@forgetPassword');
+Route::get('/version', 'UserController@getVersion');
