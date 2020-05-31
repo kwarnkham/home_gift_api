@@ -13,13 +13,12 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        'App\Console\Commands\backupDB',
     ];
 
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
      */
     protected function schedule(Schedule $schedule)
@@ -27,6 +26,8 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             DB::table('users')->where('code_number', '>=', 3)->update(['code_number' => 0]);
         })->daily();
+
+        $schedule->command('backupDB')->daily();
     }
 
     /**
